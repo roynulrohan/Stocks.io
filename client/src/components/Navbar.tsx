@@ -20,7 +20,7 @@ export default function NavBar() {
     const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
 
     return (
-        <Disclosure as='nav' className='dark:bg-gray-900'>
+        <Disclosure as='nav' className='dark:bg-darkBg'>
             {({ open }: any) => (
                 <>
                     <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
@@ -45,7 +45,7 @@ export default function NavBar() {
                                                 to={item.redirect}
                                                 className={classNames(
                                                     location.pathname === item.redirect
-                                                        ? 'dark:bg-gray-800 dark:text-white shadow-md'
+                                                        ? 'dark:bg-darkField dark:text-white shadow-md'
                                                         : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
                                                     'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md'
                                                 )}
@@ -66,11 +66,11 @@ export default function NavBar() {
                                         {({ open }: any) => (
                                             <div>
                                                 <Menu.Button
-                                                    className='w-10 h-10 sm:w-auto sm:h-8 sm:text-sm sm:px-4 sm:py-2 sm:justify-around 
+                                                    className='w-10 h-10 sm:w-auto sm:h-10 sm:text-sm sm:px-4 sm:py-2 sm:justify-around 
                                                 rounded-full lg:w-48 flex justify-center items-center px-3 py-1 text-lg font-medium   
                                                 hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'>
-                                                    <span className='hidden sm:block'>{user?.name}</span>
-                                                    <span className='block sm:hidden'>{user?.name?.at(0)}</span>
+                                                    <span className='hidden sm:block'>{user?.nickname}</span>
+                                                    <span className='block sm:hidden'>{user?.nickname?.at(0)?.toUpperCase()}</span>
                                                     {open ? (
                                                         <ChevronUpIcon className='hidden sm:block h-5' />
                                                     ) : (
@@ -85,7 +85,7 @@ export default function NavBar() {
                                                     leave='transition ease-in duration-75'
                                                     leaveFrom='transform opacity-100 scale-100'
                                                     leaveTo='transform opacity-0 scale-95'>
-                                                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                                                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
                                                         <Menu.Item>
                                                             {({ active }) => (
                                                                 <Link
@@ -134,7 +134,7 @@ export default function NavBar() {
                                 ) : (
                                     <button
                                         onClick={() => loginWithRedirect()}
-                                        className='w-auto px-6 py-2 shadow-md  text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+                                        className='w-auto px-6 py-2 shadow-md text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
                                         Login
                                     </button>
                                 )}

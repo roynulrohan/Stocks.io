@@ -14,7 +14,7 @@ export default function ToggleDarkMode({ className }: Props) {
 
     return (
         <Switch checked={isDark} onChange={setIsDark}>
-            <span className={(isDark ? 'bg-gray-700' : '') + ' rounded-full shadow-md py-1 h-8 w-16 flex'}>
+            <span className={(isDark ? 'bg-gray-700' : '') + ' rounded-full shadow-md p-1 h-8 w-16 flex'}>
                 <span
                     className={`block h-full w-1/2 rounded-full transition duration-300 ease-in-out transform ${
                         isDark ? 'bg-transparent text-yellow-400 translate-x-full' : 'text-yellow-400'
