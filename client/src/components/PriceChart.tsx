@@ -15,7 +15,7 @@ const PriceChart = (props: any) => {
 
         const ctx = document.getElementById(id);
         const data = {
-            labels: [currPrice?.toFixed(2) || 0],
+            labels: [parseFloat(currPrice)?.toFixed(2) || 0],
             datasets: [
                 {
                     data: [0],
@@ -32,8 +32,8 @@ const PriceChart = (props: any) => {
 
         if (data.datasets[0].data.length === 1) {
             for (let i = 0; i < 5; i++) {
-                data.labels.push(new Date().getTime());
-                data.datasets[0].data.push(Math.random() * (200 - 1) + 1).toFixed(2);
+                data.labels.push(new Date().toLocaleTimeString());
+                data.datasets[0].data.push(parseFloat((Math.random() * (200 - 1) + 1).toFixed(2)));
             }
         }
 
@@ -66,7 +66,7 @@ const PriceChart = (props: any) => {
             options: optionsSet,
         });
 
-        socket.on(ticker, (msg: any) => {
+        socket.on(ticker, (price: any) => {
             if (mounted) {
                 let length = data.labels.length;
                 if (length > 6) {
@@ -74,8 +74,8 @@ const PriceChart = (props: any) => {
                     data.labels.shift();
                 }
 
-                data.labels.push(new Date().getTime());
-                data.datasets[0].data.push(parseFloat(msg)).toFixed(2);
+                data.labels.push(new Date().toLocaleTimeString());
+                data.datasets[0].data.push(parseFloat(price)).toFixed(2);
                 chartDrawn.update();
             }
         });

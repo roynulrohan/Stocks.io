@@ -92,7 +92,7 @@ export default function NavBar() {
                                                                     to='/profile'
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
                                                                     )}>
                                                                     Your Profile
                                                                 </Link>
@@ -104,7 +104,7 @@ export default function NavBar() {
                                                                     to='/settings'
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-gray-700'
+                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
                                                                     )}>
                                                                     Settings
                                                                 </Link>
@@ -120,7 +120,7 @@ export default function NavBar() {
                                                                     }
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
-                                                                        'block px-4 py-2 text-sm text-red-600 cursor-pointer'
+                                                                        'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
                                                                     )}>
                                                                     Sign out
                                                                 </div>
@@ -158,7 +158,7 @@ export default function NavBar() {
                                     {item.name}
                                 </Link>
                             ))}
-                            <div className='px-3 flex items-center'>
+                            <div className='px-2 py-2 flex items-center'>
                                 <ToggleDarkMode />
                             </div>
                         </div>

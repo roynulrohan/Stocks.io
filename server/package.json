@@ -23,6 +23,7 @@
         "graphql-compose-mongoose": "^9.7.0",
         "graphql-middleware": "^6.1.7",
         "graphql-tools": "^8.2.0",
+        "lodash": "^4.17.21",
         "mongoose": "^6.0.8",
         "mongoose-bcrypt": "^1.9.0",
         "mongoose-timestamp": "^0.6.0",

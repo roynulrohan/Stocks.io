@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { composeWithMongoose } from 'graphql-compose-mongoose';
 
 const StockSchema = new Schema(
     {
@@ -51,4 +50,3 @@ const StockSchema = new Schema(
 );
 
 export const Stock = mongoose.model('Stock', StockSchema);
-export const StockTC = composeWithMongoose(Stock);

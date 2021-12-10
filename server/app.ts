@@ -4,8 +4,8 @@ import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
-import { startUpdatingStocks } from './sockets/market';
-import schema from './schema';
+import { updateStockPrices, startUpdatingStocks } from './sockets/market';
+import schema from './schema/schema';
 
 dotenv.config();
 
@@ -26,21 +26,30 @@ mongoose
     })
     .then(() => {
         console.log('Mongo connection established');
-        startUpdatingStocks(undefined, 900000);
+        startUpdatingStocks(undefined, 120000);
         console.log('Started updating all stocks without socket emits');
     });
 
 const http = app.listen(process.env.PORT || 4000, () => console.log(`Server is running at http://localhost:${process.env.PORT || 4000}${server.graphqlPath}`));
 const io = new Server(http);
 
-let isUpdating = false;
+let refreshIntervalId = null;
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('New socket connection: ', socket?.id);
 
-    if (!isUpdating) {
-        console.log('Started updating stocks with socket connection');
-        startUpdatingStocks(io, 10000);
-        isUpdating = true;
+    if (!refreshIntervalId) {
+        console.log('Started 10 second interval for updating stocks');
+        refreshIntervalId = setInterval(() => {
+            updateStockPrices(io);
+        }, 10000);
     }
+
+    socket.on('disconnect', () => {
+        if (io.engine.clientsCount === 0 && refreshIntervalId) {
+            clearInterval(refreshIntervalId);
+            refreshIntervalId = null;
+            console.log('No users connected, stopped 10 second interval for stocks');
+        }
+    });
 });
