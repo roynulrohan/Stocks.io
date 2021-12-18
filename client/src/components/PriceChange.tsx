@@ -1,10 +1,37 @@
 import { useEffect, useState } from 'react';
+import { useSocket } from '../contexts/SocketProvider';
+import { useSelector } from 'react-redux';
+import { StockUpdate, RootState } from '../types';
 
-export default function PriceChange({ price, prevPrice, currency }: any) {
+export default function PriceChange({ initialPrice, currency, ticker }: any) {
+    const socket: any = useSocket();
     const [currencySymbol, setCurrencySymbol] = useState('$');
     const [isCAD, setIsCAD] = useState(false);
     const [priceChange, setPriceChange] = useState(0);
     const [isGain, setIsGain] = useState(true);
+
+    const [price, setPrice] = useState<any>(0);
+    const [prevPrice, setPrevPrice] = useState<number>(0);
+
+    useEffect(() => {
+        setPrice(initialPrice);
+    }, []);
+
+    useEffect(() => {
+        if (socket === null) return;
+
+        socket?.on(ticker, (price: number) => {
+            setPrice(price);
+        });
+
+        return () => {
+            socket && socket?.off(ticker);
+        };
+    }, [socket]);
+
+    useEffect(() => {
+        setPrevPrice(price);
+    }, [price]);
 
     useEffect(() => {
         if (price) {

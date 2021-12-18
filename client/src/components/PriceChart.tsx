@@ -3,7 +3,7 @@ import { Chart, registerables } from 'chart.js';
 import { useSocket } from '../contexts/SocketProvider';
 
 const PriceChart = (props: any) => {
-    const { id, legendDisplay, xDisplay, yDisplay, ticker, currPrice, styleSet } = props;
+    const { id, legendDisplay, xDisplay, yDisplay, ticker, initialPrice, styleSet } = props;
     Chart.register(...registerables);
     const socket: any = useSocket();
 
@@ -15,10 +15,10 @@ const PriceChart = (props: any) => {
 
         const ctx = document.getElementById(id);
         const data = {
-            labels: [parseFloat(currPrice)?.toFixed(2) || 0],
+            labels: [parseFloat(initialPrice)?.toFixed(2) || 0],
             datasets: [
                 {
-                    data: [0],
+                    data: [initialPrice],
                     label: 'Price',
                     backgroundColor: '#10B981',
                     borderColor: '#10B981',
@@ -31,9 +31,9 @@ const PriceChart = (props: any) => {
         };
 
         if (data.datasets[0].data.length === 1) {
-            for (let i = 0; i < 5; i++) {
-                data.labels.push(new Date().toLocaleTimeString());
-                data.datasets[0].data.push(parseFloat((Math.random() * (200 - 1) + 1).toFixed(2)));
+            for (let i = 1; i < 5; i++) {
+                data.labels.unshift(new Date().toLocaleTimeString());
+                data.datasets[0].data.unshift(parseFloat((Math.random() * (200 - 1) + 1).toFixed(2)));
             }
         }
 
@@ -86,7 +86,7 @@ const PriceChart = (props: any) => {
 
             socket && socket?.off(ticker);
         };
-    }, [id, legendDisplay, xDisplay, yDisplay, socket, ticker, currPrice]);
+    }, [id, legendDisplay, xDisplay, yDisplay, socket, ticker, initialPrice]);
 
     return (
         <div className={styleSet}>
