@@ -39,7 +39,7 @@ const StockSchema = new Schema(
             type: String,
             required: true,
         },
-        url: {
+        weburl: {
             type: String,
             required: true,
         },

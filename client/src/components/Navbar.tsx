@@ -5,6 +5,7 @@ import { useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import ToggleDarkMode from './ToggleDarkMode';
+import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
 
 const navigation = [
     { name: 'Home', redirect: '/', current: true },
@@ -34,7 +35,9 @@ export default function NavBar() {
                             </div>
                             <div className='flex-1 flex items-center justify-center sm:items-stretch sm:justify-start'>
                                 <div className='flex-shrink-0 flex items-center'>
-                                    <img className='block h-8 w-auto' src='https://www.svgrepo.com/show/353431/atomic-icon.svg' alt='Workflow' />
+                                    <div className='h-10 w-10 mr-2'>
+                                        <img src={RocketLaunchIcon} className='object-contain' alt='Stocks.io Logo' />
+                                    </div>
                                     <span className='hidden lg:block mx-3 text-xl w-auto dark:text-white select-none'>Stocks.io</span>
                                 </div>
                                 <div className='hidden sm:block sm:ml-6'>

@@ -11,13 +11,18 @@ export const StockTypeDef = gql`
         industry: String!
         country: String!
         currency: String!
-        url: String!
+        weburl: String!
     }
-    type Stocks {
+    type stocks {
         stocks: [Stock]
     }
 
+    type stock {
+        stock: Stock
+    }
+
     type Query {
-        getStocks(search: String): Stocks
+        getStocks(search: String): stocks
+        getStock(search: String): stock
     }
 `;

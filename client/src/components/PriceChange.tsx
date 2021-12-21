@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useSocket } from '../contexts/SocketProvider';
-import { useSelector } from 'react-redux';
-import { StockUpdate, RootState } from '../types';
 
 export default function PriceChange({ initialPrice, currency, ticker }: any) {
     const socket: any = useSocket();
@@ -14,8 +12,8 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
     const [prevPrice, setPrevPrice] = useState<number>(0);
 
     useEffect(() => {
-        setPrice(initialPrice);
-    }, []);
+        setPrice(initialPrice || 0);
+    }, [initialPrice]);
 
     useEffect(() => {
         if (socket === null) return;
@@ -27,7 +25,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
         return () => {
             socket && socket?.off(ticker);
         };
-    }, [socket]);
+    }, [socket, ticker]);
 
     useEffect(() => {
         setPrevPrice(price);
@@ -55,7 +53,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
         } else if (currency === 'CAD') {
             setIsCAD(true);
         }
-    }, []);
+    }, [currency]);
 
     return (
         <p

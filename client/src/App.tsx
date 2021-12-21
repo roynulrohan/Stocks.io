@@ -3,6 +3,7 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import { AnimatePresence } from 'framer-motion';
 import MarketPage from './pages/MarketPage';
+import StockPage from './pages/StockPage';
 
 function App() {
     const location = useLocation();
@@ -19,6 +20,9 @@ function App() {
                 </Route>
                 <Route path='/market'>
                     <MarketPage />
+                </Route>
+                <Route path='/stock'>
+                    <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
                 </Route>
             </Switch>
         </AnimatePresence>

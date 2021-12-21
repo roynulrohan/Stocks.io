@@ -1,7 +1,5 @@
 import { gql, useQuery } from '@apollo/client';
-import React, { SetStateAction, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Stock, StockUpdate, RootState } from '../types';
+import { useEffect, useState } from 'react';
 import StockCard from '../components/StockCard';
 
 const GET_STOCKS = gql`
