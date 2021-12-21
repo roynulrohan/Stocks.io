@@ -1,25 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useSocket } from '../contexts/SocketProvider';
+import { StockUpdate } from '../types';
 
-export default function PriceChange({ initialPrice, currency, ticker }: any) {
+interface Props {
+    initialPrice: number;
+    currency: string;
+    ticker: string;
+}
+
+export default function PriceChange({ initialPrice, currency, ticker }: Props) {
     const socket: any = useSocket();
     const [currencySymbol, setCurrencySymbol] = useState('$');
     const [isCAD, setIsCAD] = useState(false);
-    const [priceChange, setPriceChange] = useState(0);
+    const [priceChange, setPriceChange] = useState<number>(0);
     const [isGain, setIsGain] = useState(true);
-
-    const [price, setPrice] = useState<any>(0);
+    const [price, setPrice] = useState<number>(initialPrice || 0);
     const [prevPrice, setPrevPrice] = useState<number>(0);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        setPrice(initialPrice || 0);
-    }, [initialPrice]);
+        const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
+        
+        setIsGain(sessionData?.isGain);
+        setPriceChange(sessionData?.priceChange);
+
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         if (socket === null) return;
 
-        socket?.on(ticker, (price: number) => {
-            setPrice(price);
+        socket?.on(ticker, (priceData: StockUpdate) => {
+            setPrice(priceData.price);
         });
 
         return () => {
@@ -28,11 +40,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
     }, [socket, ticker]);
 
     useEffect(() => {
-        setPrevPrice(price);
-    }, [price]);
-
-    useEffect(() => {
-        if (price) {
+        if (mounted) {
             if (price >= prevPrice) {
                 setIsGain(true);
                 const change = ((price - prevPrice) / price) * 100;
@@ -43,7 +51,13 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
                 setPriceChange(change);
             }
         }
+
+        setPrevPrice(price);
     }, [price]);
+
+    useEffect(() => {
+        window.sessionStorage.setItem(ticker + '-PriceChange', JSON.stringify({ isGain, priceChange }));
+    }, [priceChange]);
 
     useEffect(() => {
         if (currency === 'USD') {
@@ -63,7 +77,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: any) {
             }>
             <span className='font-semibold'>
                 {currencySymbol}
-                {parseFloat(price)?.toFixed(2)}
+                {price.toFixed(2)}
             </span>{' '}
             <span className='dark:text-gray-300 font-medium text-xs'>
                 {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange.toFixed(2) : ' -' + priceChange.toFixed(2)}%

@@ -30,7 +30,7 @@ export default function StockCard({ stock }: Props) {
                 <p className='text-sm md:text-xs font-normal text-gray-900 dark:text-gray-300 mb-2'>
                     <span className='dark:text-gray-400'>{stock?.exchange}</span> : <span className='dark:text-gray-400 font-semibold'>{stock?.ticker}</span>
                 </p>
-                <PriceChange id={stock?.ticker + ' price change'} initialPrice={stock?.price} currency={stock?.currency} ticker={stock?.ticker} />
+                <PriceChange initialPrice={stock?.price} currency={stock?.currency} ticker={stock?.ticker} />
                 <PriceChart
                     key={stock?.ticker + ' price change'}
                     id={stock?.ticker + ' price chart'}

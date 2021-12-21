@@ -5,7 +5,7 @@ export const StockTypeDef = gql`
         ticker: String!
         name: String!
         exchange: String!
-        price: String!
+        price: Float!
         logo: String!
         ipo: String!
         industry: String!

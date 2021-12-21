@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { useSocket } from '../contexts/SocketProvider';
+import { StockUpdate } from '../types';
 
 const PriceChart = (props: any) => {
     const { id, legendDisplay, xDisplay, yDisplay, ticker, initialPrice, styleSet } = props;
@@ -14,11 +15,14 @@ const PriceChart = (props: any) => {
         const down = (ctx: any, value: any) => (ctx.p0.parsed.y > ctx.p1.parsed.y ? value : undefined);
 
         const ctx = document.getElementById(id);
+
+        const sessionData: any = JSON.parse(window.sessionStorage.getItem(ticker) || '{}');
+
         const data = {
-            labels: [parseFloat(initialPrice)?.toFixed(2) || 0],
+            labels: sessionData?.labels ? [...sessionData?.labels, new Date().toLocaleTimeString()] : [new Date().toLocaleTimeString()],
             datasets: [
                 {
-                    data: [initialPrice],
+                    data: sessionData?.data ? [...sessionData?.data, initialPrice] : [parseFloat(initialPrice)],
                     label: 'Price',
                     backgroundColor: '#10B981',
                     borderColor: '#10B981',
@@ -66,17 +70,19 @@ const PriceChart = (props: any) => {
             options: optionsSet,
         });
 
-        socket.on(ticker, (price: any) => {
+        socket.on(ticker, (priceData: StockUpdate) => {
             if (mounted) {
                 let length = data.labels.length;
-                if (length > 6) {
-                    data.datasets[0].data.shift();
-                    data.labels.shift();
+                if (length > 10) {
+                    data.datasets[0].data = data.datasets[0].data.slice(-10);
+                    data.labels = data.labels.slice(-10);
                 }
 
                 data.labels.push(new Date().toLocaleTimeString());
-                data.datasets[0].data.push(parseFloat(price)).toFixed(2);
+                data.datasets[0].data.push(priceData.price).toFixed(2);
                 chartDrawn.update();
+
+                window.sessionStorage.setItem(ticker, JSON.stringify({ data: data.datasets[0].data || [], labels: data.labels || [] }));
             }
         });
 
@@ -85,6 +91,8 @@ const PriceChart = (props: any) => {
             chartDrawn.destroy();
 
             socket && socket?.off(ticker);
+
+            window.sessionStorage.setItem(ticker, JSON.stringify({ data: data.datasets[0].data || [], labels: data.labels || [] }));
         };
     }, [id, legendDisplay, xDisplay, yDisplay, socket, ticker, initialPrice]);
 

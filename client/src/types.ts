@@ -12,7 +12,6 @@ interface Stock {
 
 interface StockUpdate {
     price: number;
-    prevPrice: number;
 }
 
 interface RootState {

@@ -52,17 +52,19 @@ export default function StockPage({ ticker }: Props) {
                     <span className='dark:text-gray-400 font-semibold'>{stockData?.ticker}</span>
                 </p>
                 {stockData?.price && (
-                    <PriceChange id={ticker + ' page price change'} initialPrice={stockData?.price} currency={stockData?.currency} ticker={ticker} />
+                    <PriceChange initialPrice={stockData?.price} currency={stockData?.currency} ticker={ticker} />
                 )}
-                <PriceChart
-                    id={ticker + ' page price chart'}
-                    legendDisplay={false}
-                    xDisplay={false}
-                    yDisplay={false}
-                    initialPrice={stockData?.price}
-                    ticker={ticker}
-                    styleSet={'h-3/4 w-2/3 p-5'}
-                />
+                {stockData?.price && (
+                    <PriceChart
+                        id={ticker + ' page price chart'}
+                        legendDisplay={false}
+                        xDisplay={false}
+                        yDisplay={false}
+                        initialPrice={stockData?.price}
+                        ticker={ticker}
+                        styleSet={'h-3/4 w-2/3 p-5'}
+                    />
+                )}
             </div>
         </div>
     );
