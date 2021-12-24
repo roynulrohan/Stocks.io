@@ -45,7 +45,7 @@ export default function NavBar() {
         <Disclosure as='nav' className='dark:bg-darkBg'>
             {({ open }: any) => (
                 <>
-                    <div className='max-w-7xl mx-auto px-2 sm:px-6 lg:px-8'>
+                    <div className='max-w-7xl mx-auto px-2 py-1 sm:px-6 lg:px-8'>
                         <div className='relative flex items-center justify-between h-20'>
                             <div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>
                                 {/* Mobile menu button*/}
@@ -56,7 +56,7 @@ export default function NavBar() {
                             </div>
                             <div className='flex-1 flex items-center justify-center sm:items-stretch sm:justify-start'>
                                 <div className='flex-shrink-0 flex items-center'>
-                                    <div className='h-10 w-10 mr-2'>
+                                    <div className='h-10 w-10 mr-2 p-1'>
                                         <img src={RocketLaunchIcon} className='object-contain' alt='Stocks.io Logo' />
                                     </div>
                                     <span className='hidden lg:block mx-3 text-xl w-auto dark:text-white select-none'>Stocks.io</span>
@@ -154,7 +154,7 @@ export default function NavBar() {
                                 ) : (
                                     <button
                                         onClick={handleLogin}
-                                        className='w-auto px-6 py-2 shadow-md cursor-pointer text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+                                        className='w-auto px-6 py-2 shadow-lg cursor-pointer text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
                                         Login
                                     </button>
                                 )}

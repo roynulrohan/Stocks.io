@@ -2,6 +2,8 @@ import React, { useEffect } from 'react';
 import './scss/style.scss';
 import { Route, Switch, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
 import { AnimatePresence } from 'framer-motion';
 import MarketPage from './pages/MarketPage';
 import StockPage from './pages/StockPage';
@@ -28,24 +30,27 @@ function App() {
 
     return (
         <AnimatePresence>
-            <div className='flex flex-col h-screen'>
-                <Navbar />
-                <Switch location={location} key={location.pathname}>
-                    <Route exact path='/'>
-                        <div className='dark:bg-darkBg h-full w-full min-h-screen'>
-                            <h1>Home</h1>
-                        </div>
-                    </Route>
-                    <Route exact path='/market'>
-                        <MarketPage />
-                    </Route>
-                    <Route exact path='/auth'>
-                        <AuthPage />
-                    </Route>
-                    <Route path='/stock'>
-                        <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
-                    </Route>
-                </Switch>
+            <div className='min-h-screen flex flex-col'>
+                <ScrollToTop>
+                    <Navbar />
+                    <Switch location={location} key={location.pathname}>
+                        <Route exact path='/'>
+                            <div className='dark:bg-darkBg h-full w-full min-h-screen'>
+                                <h1>Home</h1>
+                            </div>
+                        </Route>
+                        <Route exact path='/market'>
+                            <MarketPage />
+                        </Route>
+                        <Route exact path='/auth'>
+                            <AuthPage />
+                        </Route>
+                        <Route path='/stock'>
+                            <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
+                        </Route>
+                    </Switch>
+                    <Footer />
+                </ScrollToTop>
             </div>
         </AnimatePresence>
     );

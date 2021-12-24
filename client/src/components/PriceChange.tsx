@@ -6,9 +6,10 @@ interface Props {
     initialPrice: number;
     currency: string;
     ticker: string;
+    styleset: string;
 }
 
-export default function PriceChange({ initialPrice, currency, ticker }: Props) {
+export default function PriceChange({ initialPrice, currency, ticker, styleset }: Props) {
     const socket: any = useSocket();
     const [currencySymbol, setCurrencySymbol] = useState('$');
     const [isCAD, setIsCAD] = useState(false);
@@ -20,9 +21,11 @@ export default function PriceChange({ initialPrice, currency, ticker }: Props) {
 
     useEffect(() => {
         const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
-        
-        setIsGain(sessionData?.isGain);
-        setPriceChange(sessionData?.priceChange);
+
+        if (sessionData.priceChange) {
+            setIsGain(sessionData?.isGain);
+            setPriceChange(sessionData?.priceChange);
+        }
 
         setMounted(true);
     }, []);
@@ -72,7 +75,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: Props) {
     return (
         <p
             className={
-                'text-md sm:text-xs lg:text-md text-gray-900 dark:text-gray-200 mb-2 rounded-full px-2 py-1' +
+                'text-gray-900 dark:text-gray-200 mb-2 rounded-full px-2 py-1 ' + styleset +
                 (isGain ? ' dark:bg-green-600 bg-green-300' : ' dark:bg-red-800 bg-red-400')
             }>
             <span className='font-semibold'>
@@ -80,7 +83,7 @@ export default function PriceChange({ initialPrice, currency, ticker }: Props) {
                 {price.toFixed(2)}
             </span>{' '}
             <span className='dark:text-gray-300 font-medium text-xs'>
-                {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange.toFixed(2) : ' -' + priceChange.toFixed(2)}%
+                {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange?.toFixed(2) : ' -' + priceChange?.toFixed(2)}%
             </span>
         </p>
     );

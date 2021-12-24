@@ -81,11 +81,11 @@ const Auth = () => {
     };
 
     return (
-        <div className='dark:bg-darkBg w-full flex flex-1 items-center text-center'>
-            <div className='w-full max-w-sm mx-auto overflow-hidden bg-white dark:bg-darkField text-gray-700 dark:text-gray-200 rounded-2xl shadow-md'>
+        <div className='dark:bg-darkBg w-full flex flex-auto items-center text-center'>
+            <div className='w-full max-w-sm mx-auto overflow-hidden bg-white dark:bg-darkField text-gray-700 dark:text-gray-200 rounded-2xl shadow-xl'>
                 {!auth?.user ? (
                     <>
-                        <div className='px-8 py-8 relative'>
+                        <div className='p-8 relative'>
                             <h2 className='text-3xl font-bold text-center text-gray-700 dark:text-white'>Stocks.io</h2>
 
                             <h3 className='mt-1 text-xl font-medium text-center text-gray-600 dark:text-gray-200'>Welcome Back</h3>
@@ -95,7 +95,7 @@ const Auth = () => {
                             <form onSubmit={handleSubmit} name='auth_form'>
                                 <div className='w-full mt-4'>
                                     <input
-                                        className='block w-full px-4 py-2 mt-2 border-none text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
+                                        className='block w-full px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
                                         type='text'
                                         required
                                         placeholder='Username'
@@ -107,7 +107,7 @@ const Auth = () => {
 
                                 <div className='w-full mt-4'>
                                     <input
-                                        className='block w-full px-4 py-2 mt-2 border-none text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
+                                        className='block w-full px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
                                         type='password'
                                         required
                                         placeholder='Password'
@@ -121,7 +121,7 @@ const Auth = () => {
                                     <>
                                         <div className='w-full mt-4'>
                                             <input
-                                                className='block w-full px-4 py-2 mt-2 border-none text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
+                                                className='block w-full px-4 py-2 mt-2 text-gray-700 dark:text-gray-200 placeholder-gray-500 bg-white border rounded-md dark:bg-gray-800 dark:placeholder-gray-400 focus:border-pink-600 shadow-md focus:outline-none focus:ring-2 focus:ring-pink-600 focus:border-transparent'
                                                 type='password'
                                                 required
                                                 placeholder='Confirm Password'

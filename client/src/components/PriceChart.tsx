@@ -35,9 +35,10 @@ const PriceChart = (props: any) => {
         };
 
         if (data.datasets[0].data.length === 1) {
-            for (let i = 1; i < 5; i++) {
+            const quarter = initialPrice / 4;
+            for (let i = 1; i < 15; i++) {
                 data.labels.unshift(new Date().toLocaleTimeString());
-                data.datasets[0].data.unshift(parseFloat((Math.random() * (200 - 1) + 1).toFixed(2)));
+                data.datasets[0].data.unshift(parseFloat((Math.random() * (initialPrice + quarter - (initialPrice - quarter)) + (initialPrice - quarter)).toFixed(2)));
             }
         }
 
@@ -73,9 +74,9 @@ const PriceChart = (props: any) => {
         socket.on(ticker, (priceData: StockUpdate) => {
             if (mounted) {
                 let length = data.labels.length;
-                if (length > 10) {
-                    data.datasets[0].data = data.datasets[0].data.slice(-10);
-                    data.labels = data.labels.slice(-10);
+                if (length > 15) {
+                    data.datasets[0].data = data.datasets[0].data.slice(-15);
+                    data.labels = data.labels.slice(-15);
                 }
 
                 data.labels.push(new Date().toLocaleTimeString());

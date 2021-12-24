@@ -8,6 +8,7 @@ interface Stock {
     ipo: string;
     country: string;
     currency: string;
+    weburl:string
 }
 
 interface User {

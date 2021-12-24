@@ -18,6 +18,25 @@ export const GET_STOCKS = gql`
     }
 `;
 
+export const GET_STOCK = gql`
+    query GETSTOCK($ticker: String) {
+        getStock(ticker: $ticker) {
+            stock {
+                ticker
+                name
+                price
+                exchange
+                industry
+                logo
+                ipo
+                country
+                currency
+                weburl
+            }
+        }
+    }
+`;
+
 export const LOGIN_USER = gql`
     mutation LoginUser($username: String!, $password: String!) {
         loginUser(username: $username, password: $password) {
