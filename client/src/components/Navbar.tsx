@@ -1,11 +1,13 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, ChevronUpIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
 import { useLocation } from 'react-router';
-import { Link } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
+import { Link, useHistory } from 'react-router-dom';
 import ToggleDarkMode from './ToggleDarkMode';
 import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
+import { useSelector, useDispatch } from 'react-redux';
+import { AuthState } from '../types';
+import { LOGOUT } from '../constants/actions';
 
 const navigation = [
     { name: 'Home', redirect: '/', current: true },
@@ -17,8 +19,27 @@ function classNames(...classes: any) {
 }
 
 export default function NavBar() {
+    const auth = useSelector((state: AuthState) => state.authReducer.authData);
     const location = useLocation();
-    const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+    const history = useHistory();
+    const dispatch = useDispatch();
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        if (auth) {
+            setIsAuthenticated(true);
+        } else {
+            setIsAuthenticated(false);
+        }
+    }, [auth]);
+
+    const handleLogin = () => {
+        history.push({ pathname: '/auth', state: { redirect: location.pathname } });
+    };
+
+    const handleSignOut = () => {
+        dispatch({ type: LOGOUT });
+    };
 
     return (
         <Disclosure as='nav' className='dark:bg-darkBg'>
@@ -72,8 +93,8 @@ export default function NavBar() {
                                                     className='w-10 h-10 sm:w-auto sm:h-10 sm:text-sm sm:px-4 sm:py-2 sm:justify-around 
                                                 rounded-full lg:w-48 flex justify-center items-center px-3 py-1 text-lg font-medium   
                                                 hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'>
-                                                    <span className='hidden sm:block'>{user?.nickname}</span>
-                                                    <span className='block sm:hidden'>{user?.nickname?.at(0)?.toUpperCase()}</span>
+                                                    <span className='hidden sm:block'>{auth?.user?.username}</span>
+                                                    <span className='block sm:hidden'>{auth?.user?.username.at(0)?.toUpperCase()}</span>
                                                     {open ? (
                                                         <ChevronUpIcon className='hidden sm:block h-5' />
                                                     ) : (
@@ -116,11 +137,7 @@ export default function NavBar() {
                                                         <Menu.Item>
                                                             {({ active }) => (
                                                                 <div
-                                                                    onClick={() =>
-                                                                        logout({
-                                                                            returnTo: window.location.origin,
-                                                                        })
-                                                                    }
+                                                                    onClick={handleSignOut}
                                                                     className={classNames(
                                                                         active ? 'bg-gray-100' : '',
                                                                         'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
@@ -136,8 +153,8 @@ export default function NavBar() {
                                     </Menu>
                                 ) : (
                                     <button
-                                        onClick={() => loginWithRedirect()}
-                                        className='w-auto px-6 py-2 shadow-md text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
+                                        onClick={handleLogin}
+                                        className='w-auto px-6 py-2 shadow-md cursor-pointer text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
                                         Login
                                     </button>
                                 )}

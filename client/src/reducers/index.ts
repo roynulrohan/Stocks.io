@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 
-import stocksReducer from './stocks';
+import authReducer from './auth';
 
-const reducers = combineReducers({ stocksReducer });
+const reducers = combineReducers({ authReducer });
 
 export default reducers;

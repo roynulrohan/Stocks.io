@@ -10,12 +10,31 @@ interface Stock {
     currency: string;
 }
 
+interface User {
+    _id: string;
+    username: string;
+    balance: number;
+}
+
 interface StockUpdate {
     price: number;
 }
 
-interface RootState {
+interface StockState {
     stocksReducer: StockUpdate;
 }
 
-export type { Stock, StockUpdate, RootState };
+interface AuthData {
+    user: User;
+    token: string;
+}
+
+interface AuthReducer {
+    authData: AuthData;
+}
+
+interface AuthState {
+    authReducer: AuthReducer;
+}
+
+export type { Stock, StockUpdate, StockState, AuthState };

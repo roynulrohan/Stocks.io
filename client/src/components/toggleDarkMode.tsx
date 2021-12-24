@@ -5,11 +5,7 @@
 import { Switch } from '@headlessui/react';
 import { useDarkMode } from '../hooks/useDarkMode';
 
-interface Props {
-    className?: string;
-}
-
-export default function ToggleDarkMode({ className }: Props) {
+export default function ToggleDarkMode() {
     const [isDark, setIsDark] = useDarkMode();
 
     return (

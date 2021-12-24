@@ -1,24 +1,7 @@
 import { gql, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import StockCard from '../components/StockCard';
-
-const GET_STOCKS = gql`
-    query GETSTOCKS($search: String) {
-        getStocks(search: $search) {
-            stocks {
-                ticker
-                name
-                price
-                exchange
-                industry
-                logo
-                ipo
-                country
-                currency
-            }
-        }
-    }
-`;
+import { GET_STOCKS } from '../graphql';
 
 export default function MarketPage() {
     const { data, refetch } = useQuery(GET_STOCKS);
@@ -59,7 +42,7 @@ export default function MarketPage() {
                 <div className='dark:bg-darkBg flex flex-wrap justify-center mt-10'>
                     {data?.getStocks?.stocks.map((stock: any) => {
                         return <StockCard key={stock.ticker} stock={stock} />;
-                       
+
                         //return <div key={stock.ticker}>{JSON.stringify(stock)}</div>;
                     })}
                 </div>

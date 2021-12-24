@@ -10,7 +10,14 @@ import schema from './schema/schema';
 dotenv.config();
 
 const app = express();
-const server = new ApolloServer({ schema });
+const server = new ApolloServer({
+    schema,
+    context: ({ req }) => {
+        return {
+            req,
+        };
+    },
+});
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());

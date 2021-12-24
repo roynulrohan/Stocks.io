@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.4.15",
-    "@auth0/auth0-react": "^1.8.0",
     "@craco/craco": "^6.3.0",
     "@headlessui/react": "^1.4.1",
     "@heroicons/react": "^1.0.4",
@@ -16,6 +15,7 @@
     "chart.js": "^3.5.1",
     "framer-motion": "^4.1.17",
     "graphql": "^15.6.0",
+    "jwt-decode": "^3.1.2",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.5",
