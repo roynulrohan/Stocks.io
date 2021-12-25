@@ -39,7 +39,7 @@ export default function MarketPage() {
                         onChange={searchOnChange}
                     />
                 </div>
-                <div className='dark:bg-darkBg flex flex-wrap justify-center mt-10'>
+                <div className='dark:bg-darkBg flex flex-wrap justify-center mt-10 px-2'>
                     {data?.getStocks?.stocks.map((stock: any) => {
                         return <StockCard key={stock.ticker} stock={stock} />;
 

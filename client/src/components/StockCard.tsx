@@ -23,7 +23,7 @@ const StockCard = React.memo(({ stock }: Props) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             onClick={cardOnClick}
-            className='transition-transform duration-150 flex flex-col justify-center p-5 sm:p-0 m-5 sm:m-3 lg:m-4 w-3/4 h-96 sm:w-44 sm:h-64 lg:w-60 lg:h-80 select-none shadow-lg bg-gray-100 dark:bg-darkCard dark:text-white rounded-3xl cursor-pointer overflow-hidden transform hover:scale-105 hover:shadow-xl'>
+            className='transition-transform duration-150 flex flex-col justify-center p-5 sm:p-0 m-5 sm:m-3 lg:m-3 w-3/4 h-96 sm:w-44 sm:h-64 lg:w-60 lg:h-80 select-none shadow-lg bg-gray-100 dark:bg-darkCard dark:text-white rounded-3xl cursor-pointer overflow-hidden transform hover:scale-105 hover:shadow-xl'>
             <div className='h-1/3 xl:h-32 xl:p-5 flex justify-center p-5 sm:pb-0'>
                 <motion.img
                     initial={{ opacity: 0 }}

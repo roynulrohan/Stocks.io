@@ -19,7 +19,7 @@ export const StockResolver = {
             }
 
             // execute query to search users
-            const stocks = await Stock.find(searchQuery);
+            const stocks = await Stock.find(searchQuery).sort({ ['name']: 1 });
 
             return { stocks };
         },

@@ -8,11 +8,11 @@ import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
 import { LOGOUT } from '../constants/actions';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const navigation = [
     { name: 'Home', redirect: '/', current: true },
     { name: 'Market', redirect: '/market', current: false },
-    { name: 'Portfolio', redirect: '/portfolio', current: false },
 ];
 
 function classNames(...classes: any) {
@@ -64,101 +64,122 @@ export default function NavBar() {
                                 </div>
                                 <div className='hidden sm:block sm:ml-6'>
                                     <div className='flex space-x-4'>
-                                        {navigation.map((item) => (
-                                            <Link
-                                                key={item.name}
-                                                to={item.redirect}
-                                                className={classNames(
-                                                    location.pathname === item.redirect
-                                                        ? 'dark:bg-darkField dark:text-white shadow-md'
-                                                        : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
-                                                    'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
-                                                )}
-                                                aria-current={location.pathname === item.redirect ? 'page' : undefined}>
-                                                {item.name}
-                                            </Link>
-                                        ))}
-                                        <div className='px-3 flex items-center'>
-                                            <ToggleDarkMode />
-                                        </div>
+                                        <AnimatePresence initial={false}>
+                                            {navigation.map((item) => (
+                                                <Link
+                                                    key={item.name}
+                                                    to={item.redirect}
+                                                    className={classNames(
+                                                        location.pathname === item.redirect
+                                                            ? 'dark:bg-darkField dark:text-white shadow-md'
+                                                            : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
+                                                        'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
+                                                    )}
+                                                    aria-current={location.pathname === item.redirect ? 'page' : undefined}>
+                                                    {item.name}
+                                                </Link>
+                                            ))}
+                                            {isAuthenticated && (
+                                                <motion.div
+                                                    key='Portfolio'
+                                                    initial={{ y: -15, opacity: 0 }}
+                                                    animate={{ y: 0, opacity: 1 }}
+                                                    exit={{ y: -15, opacity: 0 }}
+                                                    transition={{ duration: 0.5 }}>
+                                                    <Link
+                                                        to='/portfolio'
+                                                        className={classNames(
+                                                            location.pathname === '/portfolio'
+                                                                ? 'dark:bg-darkField dark:text-white shadow-md'
+                                                                : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
+                                                            'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
+                                                        )}
+                                                        aria-current={location.pathname === '/portfolio' ? 'page' : undefined}>
+                                                        Portfolio
+                                                    </Link>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
                                 </div>
                             </div>
                             <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+                                <div className='px-3 flex items-center'>
+                                    <ToggleDarkMode />
+                                </div>
                                 {/* Profile dropdown */}
-                                {isAuthenticated ? (
-                                    <Menu as='div' className='ml-3 relative'>
-                                        {({ open }: any) => (
-                                            <div>
-                                                <Menu.Button
-                                                    className='w-10 h-10 sm:w-auto sm:h-10 sm:text-sm sm:px-4 sm:py-2 sm:justify-around 
+
+                                <Menu as='div' className='ml-3 relative'>
+                                    {({ open }: any) => (
+                                        <div>
+                                            <Menu.Button
+                                                className='transition-all w-10 h-10 sm:w-auto sm:h-10 sm:text-sm sm:px-4 sm:py-2 sm:justify-around 
                                                 rounded-full lg:w-48 flex justify-center items-center px-3 py-1 text-lg font-medium   
                                                 hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'>
-                                                    <span className='hidden sm:block'>{auth?.user?.username}</span>
-                                                    <span className='block sm:hidden'>{auth?.user?.username.at(0)?.toUpperCase()}</span>
-                                                    {open ? (
+                                                <span className='hidden sm:block'>{isAuthenticated ? auth?.user?.username : 'Login'}</span>
+                                                <span className='block sm:hidden'>{auth?.user?.username.at(0)?.toUpperCase()}</span>
+                                                {isAuthenticated &&
+                                                    (open ? (
                                                         <ChevronUpIcon className='hidden sm:block h-5' />
                                                     ) : (
                                                         <ChevronDownIcon className='hidden sm:block h-5' />
-                                                    )}
-                                                </Menu.Button>
-                                                <Transition
-                                                    as={Fragment}
-                                                    enter='transition ease-out duration-100'
-                                                    enterFrom='transform opacity-0 scale-95'
-                                                    enterTo='transform opacity-100 scale-100'
-                                                    leave='transition ease-in duration-75'
-                                                    leaveFrom='transform opacity-100 scale-100'
-                                                    leaveTo='transform opacity-0 scale-95'>
-                                                    <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <Link
-                                                                    to='/profile'
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
-                                                                    )}>
-                                                                    Your Profile
-                                                                </Link>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <Link
-                                                                    to='/settings'
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
-                                                                    )}>
-                                                                    Settings
-                                                                </Link>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }) => (
-                                                                <div
-                                                                    onClick={handleSignOut}
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
-                                                                    )}>
-                                                                    Sign out
-                                                                </div>
-                                                            )}
-                                                        </Menu.Item>
-                                                    </Menu.Items>
-                                                </Transition>
-                                            </div>
-                                        )}
-                                    </Menu>
-                                ) : (
-                                    <button
-                                        onClick={handleLogin}
-                                        className='w-auto px-6 py-2 shadow-lg cursor-pointer text-sm font-medium dark:text-white dark:bg-pink-600 rounded-full hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75'>
-                                        Login
-                                    </button>
-                                )}
+                                                    ))}
+
+                                                {!isAuthenticated && <button className='absolute z- w-full h-full' onClick={handleLogin}></button>}
+                                            </Menu.Button>
+
+                                            <Transition
+                                                as={Fragment}
+                                                enter='transition ease-out duration-100'
+                                                enterFrom='transform opacity-0 scale-95'
+                                                enterTo='transform opacity-100 scale-100'
+                                                leave='transition ease-in duration-75'
+                                                leaveFrom='transform opacity-100 scale-100'
+                                                leaveTo='transform opacity-0 scale-95'>
+                                                <Menu.Items
+                                                    className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'
+                                                    hidden={!isAuthenticated}>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <Link
+                                                                to='/profile'
+                                                                className={classNames(
+                                                                    active ? 'bg-gray-100' : '',
+                                                                    'block rounded-2xl px-4 py-2 text-sm text-gray-700'
+                                                                )}>
+                                                                Your Profile
+                                                            </Link>
+                                                        )}
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <Link
+                                                                to='/settings'
+                                                                className={classNames(
+                                                                    active ? 'bg-gray-100' : '',
+                                                                    'block rounded-2xl px-4 py-2 text-sm text-gray-700'
+                                                                )}>
+                                                                Settings
+                                                            </Link>
+                                                        )}
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <div
+                                                                onClick={handleSignOut}
+                                                                className={classNames(
+                                                                    active ? 'bg-gray-100' : '',
+                                                                    'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
+                                                                )}>
+                                                                Sign out
+                                                            </div>
+                                                        )}
+                                                    </Menu.Item>
+                                                </Menu.Items>
+                                            </Transition>
+                                        </div>
+                                    )}
+                                </Menu>
                             </div>
                         </div>
                     </div>

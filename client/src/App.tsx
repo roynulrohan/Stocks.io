@@ -20,13 +20,13 @@ function App() {
 
     useEffect(() => {
         verifyUser();
-    }, []);
+    }, [verifyUser]);
 
     useEffect(() => {
         if (data && !loading) {
             dispatch({ type: AUTH, payload: data?.getUser });
         }
-    }, [data, loading]);
+    }, [data, loading, dispatch]);
 
     return (
         <AnimatePresence>
