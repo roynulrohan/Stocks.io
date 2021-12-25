@@ -1,4 +1,4 @@
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import StockCard from '../components/StockCard';
 import { GET_STOCKS } from '../graphql';
@@ -24,7 +24,7 @@ export default function MarketPage() {
     }, [searchQuery, refetch]);
 
     return (
-        <div className='dark:bg-darkBg h-full w-full min-h-screen flex flex-col items-center text-center'>
+        <div className='dark:bg-darkBg pb-10 h-full w-full min-h-screen flex flex-col items-center text-center'>
             <div className='mt-20 text-3xl font-medium dark:text-white'>Browse the market.</div>
             <div className='mt-5 text-md px-5 md:text-xl text-gray-600 dark:text-gray-400'>Explore our selection of the biggest names in the industry.</div>
             <div className='mt-20 w-full flex flex-col'>

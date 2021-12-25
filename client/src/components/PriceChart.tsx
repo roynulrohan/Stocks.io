@@ -2,8 +2,9 @@ import React, { useEffect } from 'react';
 import { Chart, registerables } from 'chart.js';
 import { useSocket } from '../contexts/SocketProvider';
 import { StockUpdate } from '../types';
+import { motion } from 'framer-motion';
 
-const PriceChart = (props: any) => {
+const PriceChart = React.memo((props: any) => {
     const { id, legendDisplay, xDisplay, yDisplay, ticker, initialPrice, styleSet } = props;
     Chart.register(...registerables);
     const socket: any = useSocket();
@@ -36,9 +37,16 @@ const PriceChart = (props: any) => {
 
         if (data.datasets[0].data.length === 1) {
             const quarter = initialPrice / 4;
-            for (let i = 1; i < 15; i++) {
+            for (let i = 1; i < 20; i++) {
                 data.labels.unshift(new Date().toLocaleTimeString());
-                data.datasets[0].data.unshift(parseFloat((Math.random() * (initialPrice + quarter - (initialPrice - quarter)) + (initialPrice - quarter)).toFixed(2)));
+                data.datasets[0].data.unshift(
+                    parseFloat(
+                        (
+                            Math.random() * (initialPrice + initialPrice * 0.05 - (initialPrice + initialPrice * -0.05)) +
+                            (initialPrice + initialPrice * -0.05)
+                        ).toFixed(2)
+                    )
+                );
             }
         }
 
@@ -73,14 +81,18 @@ const PriceChart = (props: any) => {
 
         socket.on(ticker, (priceData: StockUpdate) => {
             if (mounted) {
-                let length = data.labels.length;
-                if (length > 15) {
-                    data.datasets[0].data = data.datasets[0].data.slice(-15);
-                    data.labels = data.labels.slice(-15);
-                }
-
                 data.labels.push(new Date().toLocaleTimeString());
                 data.datasets[0].data.push(priceData.price).toFixed(2);
+
+                let length = data.datasets[0].data.length;
+
+                if (length > 20) {
+                    // data.datasets[0].data.shift();
+                    // data.labels.shift();
+
+                    data.datasets[0].data = data.datasets[0].data.slice(-20);
+                    data.labels = data.labels.slice(-20);
+                }
                 chartDrawn.update();
 
                 window.sessionStorage.setItem(ticker, JSON.stringify({ data: data.datasets[0].data || [], labels: data.labels || [] }));
@@ -98,10 +110,10 @@ const PriceChart = (props: any) => {
     }, [id, legendDisplay, xDisplay, yDisplay, socket, ticker, initialPrice]);
 
     return (
-        <div className={styleSet}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5,delay:0.25 }} className={styleSet}>
             <canvas id={id}></canvas>
-        </div>
+        </motion.div>
     );
-};
+});
 
 export default PriceChart;

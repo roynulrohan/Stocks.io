@@ -1,7 +1,7 @@
 import { Stock } from '../models/Stock';
 
 export const updateStockPrices = async (io?: any) => {
-    let updatedStocks = [];
+    const updatedStocks = [];
     const stocks: any = await Stock.find({});
 
     for (let index = 0; index < stocks?.length; index++) {
@@ -31,12 +31,11 @@ export const updateStockPrices = async (io?: any) => {
         });
     }
 
-    console.log('All stocks updated');
     return updatedStocks;
 };
 
 const socketEmit = (io, sendDelay, to, value) => {
-    setTimeout(function () {
+    setTimeout(() => {
         io?.emit(to, value);
     }, sendDelay);
 };

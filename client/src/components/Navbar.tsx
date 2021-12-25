@@ -12,6 +12,7 @@ import { LOGOUT } from '../constants/actions';
 const navigation = [
     { name: 'Home', redirect: '/', current: true },
     { name: 'Market', redirect: '/market', current: false },
+    { name: 'Portfolio', redirect: '/portfolio', current: false },
 ];
 
 function classNames(...classes: any) {
@@ -71,7 +72,7 @@ export default function NavBar() {
                                                     location.pathname === item.redirect
                                                         ? 'dark:bg-darkField dark:text-white shadow-md'
                                                         : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
-                                                    'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md'
+                                                    'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
                                                 )}
                                                 aria-current={location.pathname === item.redirect ? 'page' : undefined}>
                                                 {item.name}

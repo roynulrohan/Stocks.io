@@ -23,9 +23,9 @@ export default function StockPage({ ticker }: Props) {
         <div className='dark:bg-darkBg h-screen w-full items-center'>
             <div className='flex md:justify-center items-start overflow-x-scroll md:overflow-hidden p-20'>
                 <div className='dark:bg-darkCard bg-gray-100 rounded-xl flex flex-col justify-between'>
-                    <div className='h-32 w-80 px-10 pb-0'>
+                    <div className='h-32 py-5 w-80 px-10 '>
                         <img
-                            className='p-4 w-full pb-0 lg:px-8 lg:pb-0 rounded select-none h-full object-contain object-center'
+                            className=' w-full lg:px-8 lg:pb-0 rounded select-none h-full object-contain object-center'
                             src={stockData?.logo}
                             alt={stockData?.name + ' logo'}
                         />
@@ -122,7 +122,6 @@ export default function StockPage({ ticker }: Props) {
                                     yDisplay={false}
                                     initialPrice={stockData?.price}
                                     ticker={ticker}
-                                   
                                 />
                             )}
                         </div>

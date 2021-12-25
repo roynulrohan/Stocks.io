@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSocket } from '../contexts/SocketProvider';
 import { StockUpdate } from '../types';
 
@@ -9,7 +9,7 @@ interface Props {
     styleset: string;
 }
 
-export default function PriceChange({ initialPrice, currency, ticker, styleset }: Props) {
+const PriceChange = React.memo(({ initialPrice, currency, ticker, styleset }: Props) => {
     const socket: any = useSocket();
     const [currencySymbol, setCurrencySymbol] = useState('$');
     const [isCAD, setIsCAD] = useState(false);
@@ -75,7 +75,8 @@ export default function PriceChange({ initialPrice, currency, ticker, styleset }
     return (
         <p
             className={
-                'text-gray-900 dark:text-gray-200 mb-2 rounded-full px-2 py-1 ' + styleset +
+                'text-gray-900 dark:text-gray-200 mb-2 rounded-full px-2 py-1 ' +
+                styleset +
                 (isGain ? ' dark:bg-green-600 bg-green-300' : ' dark:bg-red-800 bg-red-400')
             }>
             <span className='font-semibold'>
@@ -87,4 +88,6 @@ export default function PriceChange({ initialPrice, currency, ticker, styleset }
             </span>
         </p>
     );
-}
+});
+
+export default PriceChange;

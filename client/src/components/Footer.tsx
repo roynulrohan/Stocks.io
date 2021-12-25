@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 
 export default function Footer() {
     return (
-        <footer className='bg-gray-200 dark:bg-darkBg py-2 flex-shrink'>
-            <div className='container px-8 sm:px-16 py-4 mx-auto'>
+        <footer className='bg-gray-200 dark:bg-darkBg pt-6 pb-2 flex-shrink'>
+            <div className='container px-8 sm:px-16 mx-auto'>
                 <div className='flex justify-around'>
                     <div className='w-full -mx-6 lg:w-2/5'>
                         <div className='px-6'>
