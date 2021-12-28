@@ -14,7 +14,7 @@ import { setContext } from '@apollo/client/link/context';
 const store = createStore(reducers, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:4000/graphql',
+    uri: `${process.env.REACT_APP_API_URI || ''}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {

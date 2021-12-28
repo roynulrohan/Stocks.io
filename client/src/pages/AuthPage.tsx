@@ -28,11 +28,6 @@ const Auth = () => {
     const history = useHistory();
     const location = useLocation<LocationState>();
 
-    useEffect(() => {
-        if (auth) {
-        }
-    }, [auth]);
-
     const switchMode = (e: any) => {
         setIsLoading(false);
         setIsSignup((prevIsSignup) => !prevIsSignup);

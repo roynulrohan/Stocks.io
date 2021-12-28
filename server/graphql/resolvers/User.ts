@@ -1,9 +1,9 @@
-import { User } from '../models/User';
+import { User } from '../../models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { UserInputError, AuthenticationError } from 'apollo-server-express';
-import { validateRegisterInput, validateLoginInput } from '../utils/AuthValidator';
-import verifyToken from '../middleware/auth';
+import { UserInputError, AuthenticationError, ApolloError } from 'apollo-server-express';
+import { validateRegisterInput, validateLoginInput } from '../../utils/AuthValidator';
+import { verifyToken } from '../../middleware/auth';
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -64,8 +64,40 @@ export const UserResolver = {
             }
 
             const token = generateToken(user);
-            
+
             return { user, token };
+        },
+        deposit: async (_, { amount }, context) => {
+            const token = context.req.headers.authorization;
+
+            const authResult = verifyToken({ token: token.split(' ')[1] });
+
+            if (authResult.error) {
+                throw new AuthenticationError(authResult.error);
+            }
+
+            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: amount } }, { new: true });
+
+            return { newBalance: result.balance };
+        },
+        withdraw: async (_, { amount }, context) => {
+            const token = context.req.headers.authorization;
+
+            const authResult = verifyToken({ token: token.split(' ')[1] });
+
+            if (authResult.error) {
+                throw new AuthenticationError(authResult.error);
+            }
+
+            const user: any = await User.findOne({ _id: authResult.userId });
+
+            if (user.balance < amount) {
+                throw new ApolloError('Not enough balance');
+            }
+
+            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: -amount } }, { new: true });
+
+            return { newBalance: result.balance };
         },
     },
 

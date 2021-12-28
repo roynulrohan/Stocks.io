@@ -21,7 +21,7 @@ export default function StockPage({ ticker }: Props) {
 
     return (
         <div className='dark:bg-darkBg h-screen w-full items-center'>
-            <div className='flex md:justify-center items-start overflow-x-scroll md:overflow-hidden p-20'>
+            <div className='flex md:justify-center items-start overflow-x-scroll md:overflow-hidden p-10'>
                 <div className='dark:bg-darkCard bg-gray-100 rounded-xl flex flex-col justify-between'>
                     <div className='h-32 py-5 w-80 px-10 '>
                         <img
@@ -118,8 +118,8 @@ export default function StockPage({ ticker }: Props) {
                                 <PriceChart
                                     id={ticker + ' page price chart'}
                                     legendDisplay={false}
-                                    xDisplay={false}
-                                    yDisplay={false}
+                                    xDisplay={true}
+                                    yDisplay={true}
                                     initialPrice={stockData?.price}
                                     ticker={ticker}
                                 />

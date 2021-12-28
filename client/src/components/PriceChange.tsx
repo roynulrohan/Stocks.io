@@ -75,15 +75,15 @@ const PriceChange = React.memo(({ initialPrice, currency, ticker, styleset }: Pr
     return (
         <p
             className={
-                'text-gray-900 dark:text-gray-200 mb-2 rounded-full px-2 py-1 ' +
+                'text-gray-900 mb-2 rounded-full px-2 py-1 ' +
                 styleset +
-                (isGain ? ' dark:bg-green-600 bg-green-300' : ' dark:bg-red-800 bg-red-400')
+                (isGain ? ' bg-green-300' : ' bg-red-400')
             }>
             <span className='font-semibold'>
                 {currencySymbol}
                 {price.toFixed(2)}
             </span>{' '}
-            <span className='dark:text-gray-300 font-medium text-xs'>
+            <span className='font-medium text-xs'>
                 {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange?.toFixed(2) : ' -' + priceChange?.toFixed(2)}%
             </span>
         </p>

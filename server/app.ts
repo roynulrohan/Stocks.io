@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Server } from 'socket.io';
 import { updateStockPrices, startUpdatingStocks } from './sockets/market';
-import schema from './schema/schema';
+import schema from './graphql/schema';
 
 dotenv.config();
 

@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const jwtSecret = process.env.JWT_SECRET;
 
-const verifyToken = ({ token }) => {
+export const verifyToken = ({ token }) => {
     try {
         const isCustomAuth = token.length < 500;
         let contentDecoded;
@@ -20,8 +20,6 @@ const verifyToken = ({ token }) => {
 
         return { userId };
     } catch (error) {
-        return {error: 'Invalid Token'};
+        return { error: 'Invalid Token' };
     }
 };
-
-export default verifyToken;

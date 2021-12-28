@@ -80,24 +80,43 @@ export default function NavBar() {
                                                 </Link>
                                             ))}
                                             {isAuthenticated && (
-                                                <motion.div
-                                                    key='Portfolio'
-                                                    initial={{ y: -15, opacity: 0 }}
-                                                    animate={{ y: 0, opacity: 1 }}
-                                                    exit={{ y: -15, opacity: 0 }}
-                                                    transition={{ duration: 0.5 }}>
-                                                    <Link
-                                                        to='/portfolio'
-                                                        className={classNames(
-                                                            location.pathname === '/portfolio'
-                                                                ? 'dark:bg-darkField dark:text-white shadow-md'
-                                                                : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
-                                                            'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
-                                                        )}
-                                                        aria-current={location.pathname === '/portfolio' ? 'page' : undefined}>
-                                                        Portfolio
-                                                    </Link>
-                                                </motion.div>
+                                                <>
+                                                    <motion.div
+                                                        key='Portfolio'
+                                                        initial={{ y: -15, opacity: 0 }}
+                                                        animate={{ y: 0, opacity: 1 }}
+                                                        exit={{ y: -15, opacity: 0 }}
+                                                        transition={{ duration: 0.25 }}>
+                                                        <Link
+                                                            to='/portfolio'
+                                                            className={classNames(
+                                                                location.pathname === '/portfolio'
+                                                                    ? 'dark:bg-darkField dark:text-white shadow-md'
+                                                                    : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:border-b-2',
+                                                                'text-black px-3 py-2 rounded-md text-sm flex items-center hover:shadow-md transition-all'
+                                                            )}
+                                                            aria-current={location.pathname === '/portfolio' ? 'page' : undefined}>
+                                                            Portfolio
+                                                        </Link>
+                                                    </motion.div>
+                                                    <motion.div
+                                                        key='Balance'
+                                                        initial={{ y: -15, opacity: 0 }}
+                                                        animate={{ y: 0, opacity: 1 }}
+                                                        exit={{ y: -15, opacity: 0 }}
+                                                        transition={{ duration: 0.25 }}
+                                                        className='text-black dark:bg-green-400 bg-green-300 px-3 py-2 rounded-xl text-sm flex items-center transition-all'>
+                                                        Balance:&nbsp;
+                                                        <span className='font-bold'>
+                                                            {new Intl.NumberFormat('en-US', {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                                maximumFractionDigits: 2,
+                                                                minimumFractionDigits: 2,
+                                                            }).format(auth?.user?.balance)}
+                                                        </span>
+                                                    </motion.div>
+                                                </>
                                             )}
                                         </AnimatePresence>
                                     </div>
@@ -142,24 +161,24 @@ export default function NavBar() {
                                                     <Menu.Item>
                                                         {({ active }) => (
                                                             <Link
-                                                                to='/profile'
+                                                                to='/account'
                                                                 className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'block rounded-2xl px-4 py-2 text-sm text-gray-700'
                                                                 )}>
-                                                                Your Profile
+                                                                Account
                                                             </Link>
                                                         )}
                                                     </Menu.Item>
                                                     <Menu.Item>
                                                         {({ active }) => (
                                                             <Link
-                                                                to='/settings'
+                                                                to='/portfolio'
                                                                 className={classNames(
                                                                     active ? 'bg-gray-100' : '',
                                                                     'block rounded-2xl px-4 py-2 text-sm text-gray-700'
                                                                 )}>
-                                                                Settings
+                                                                Portfolio
                                                             </Link>
                                                         )}
                                                     </Menu.Item>

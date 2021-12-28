@@ -36,8 +36,7 @@ const PriceChart = React.memo((props: any) => {
         };
 
         if (data.datasets[0].data.length === 1) {
-            const quarter = initialPrice / 4;
-            for (let i = 1; i < 20; i++) {
+            for (let i = 1; i < 25; i++) {
                 data.labels.unshift(new Date().toLocaleTimeString());
                 data.datasets[0].data.unshift(
                     parseFloat(
@@ -66,9 +65,18 @@ const PriceChart = React.memo((props: any) => {
             scales: {
                 x: {
                     display: xDisplay,
+                    ticks: {
+                        // For a category axis, the val is the index so the lookup via getLabelForValue is needed
+                        callback: function (val: string, index: number): any {
+                            // Hide every 2nd tick label
+                            return index % 2 === 0 ? this.getLabelForValue(val) : '';
+                        },
+                        getLabelForValue: (val: string) => {},
+                    },
                 },
                 y: {
                     display: yDisplay,
+                   
                 },
             },
         };
@@ -86,12 +94,12 @@ const PriceChart = React.memo((props: any) => {
 
                 let length = data.datasets[0].data.length;
 
-                if (length > 20) {
+                if (length > 25) {
                     // data.datasets[0].data.shift();
                     // data.labels.shift();
 
-                    data.datasets[0].data = data.datasets[0].data.slice(-20);
-                    data.labels = data.labels.slice(-20);
+                    data.datasets[0].data = data.datasets[0].data.slice(-25);
+                    data.labels = data.labels.slice(-25);
                 }
                 chartDrawn.update();
 
@@ -110,7 +118,7 @@ const PriceChart = React.memo((props: any) => {
     }, [id, legendDisplay, xDisplay, yDisplay, socket, ticker, initialPrice]);
 
     return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5,delay:0.25 }} className={styleSet}>
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className={styleSet}>
             <canvas id={id}></canvas>
         </motion.div>
     );

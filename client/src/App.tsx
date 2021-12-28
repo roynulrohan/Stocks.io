@@ -20,6 +20,7 @@ function App() {
 
     useEffect(() => {
         verifyUser();
+        console.log(process.env);
     }, [verifyUser]);
 
     useEffect(() => {

@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "license": "MIT",
     "scripts": {
-        "start": "nodemon src/app.ts"
+        "start": "nodemon app.ts"
     },
     "dependencies": {
         "@babel/cli": "^7.15.7",

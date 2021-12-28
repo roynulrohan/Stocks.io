@@ -16,8 +16,14 @@ export const UserTypeDef = gql`
         getUser: UserResponse!
     }
 
+    type balanceResponse {
+        newBalance: Float
+    }
+
     type Mutation {
         registerUser(username: String!, password: String!, confirmPassword: String!): UserResponse
         loginUser(username: String!, password: String!): UserResponse
+        deposit(amount: Float!): balanceResponse
+        withdraw(amount: Float!): balanceResponse
     }
 `;
