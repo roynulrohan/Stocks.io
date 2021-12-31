@@ -3,8 +3,7 @@
 FROM node:16.10-alpine
 
 # Create App Directory
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+WORKDIR /usr/app
 
 # Install Dependencies
 COPY package*.json ./

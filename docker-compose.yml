@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
   server:
@@ -7,17 +7,20 @@ services:
       dockerfile: Dockerfile
     image: stocks.io-server
     container_name: stocks.io-server
-    command: /usr/src/app/node_modules/.bin/nodemon server.js
+    command: npm start
     volumes:
-      - ./server/:/usr/src/app
-      - /usr/src/app/node_modules
+      - ./server/src:/usr/app/src
     ports:
-      - "4000:4000"
-    env_file: ./server/.env
+      - 4000:4000
     environment:
       - NODE_ENV=development
+      - MONGO_USER=${MONGO_USER}
+      - MONGO_PASSWORD=${MONGO_PASSWORD}
+      - MONGO_DB=${MONGO_DB}
+      - JWT_SECRET=${JWT_SECRET}
     networks:
-      - app-network
+      - stocks.io-network
+    
   client:
     build:
       context: ./client
@@ -25,18 +28,20 @@ services:
     image: stocks.io-client
     container_name: stocks.io-client
     command: npm start
+    environment:
+      - REACT_APP_API_URI=http://localhost:4000
     volumes:
-      - ./client/:/usr/app
-      - /usr/app/node_modules
+      - ./client/src:/usr/app/src
+      - ./client/public:/usr/app/public
     depends_on:
       - server
     ports:
-      - "3000:3000"
+      - 3000:3000
     networks:
-      - app-network
+      - stocks.io-network
 
 networks:
-    app-network:
+    stocks.io-network:
         driver: bridge
 
 volumes:
