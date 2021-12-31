@@ -49,7 +49,7 @@ This project uses [JSON](https://www.json.org/json-en.html) to represent stock d
 ```json
 [
   {
-    "_id": ObjectId("String"),
+    "_id": "ObjectId",
     "ticker": "String",
     "exchange": "String",
     "name": "String",
