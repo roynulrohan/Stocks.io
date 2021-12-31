@@ -24,6 +24,7 @@
         "graphql-compose-mongoose": "^9.7.0",
         "graphql-middleware": "^6.1.7",
         "graphql-tools": "^8.2.0",
+        "graphql-type-json": "^0.3.2",
         "jsonwebtoken": "^8.5.1",
         "lodash": "^4.17.21",
         "mongoose": "^6.0.8",

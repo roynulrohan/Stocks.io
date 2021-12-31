@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_STOCKS = gql`
-    query GETSTOCKS($search: String) {
-        getStocks(search: $search) {
+    query GETSTOCKS($search: String, $limit: Int, $random: Boolean) {
+        getStocks(search: $search, limit: $limit, random: $random) {
             stocks {
                 ticker
                 name
@@ -72,6 +72,54 @@ export const VERIFY_USER = gql`
                 balance
             }
             token
+        }
+    }
+`;
+
+export const GET_TRANSACTIONS = gql`
+    query GetTransactions {
+        getTransactions {
+            transactions {
+                userId
+                type
+                ticker
+                shares
+                stockPrice
+                date
+                totalAmount
+            }
+        }
+    }
+`;
+
+export const DEPOSIT = gql`
+    mutation Deposit($amount: Float!) {
+        deposit(amount: $amount) {
+            newBalance
+        }
+    }
+`;
+
+export const WITHDRAW = gql`
+    mutation Withdraw($amount: Float!) {
+        withdraw(amount: $amount) {
+            newBalance
+        }
+    }
+`;
+
+export const CHANGE_USERNAME = gql`
+    mutation ChangeUsername($newUsername: String!, $confirmPassword: String!) {
+        changeUsername(newUsername: $newUsername, confirmPassword: $confirmPassword) {
+            newUsername
+        }
+    }
+`;
+
+export const GET_OWNEDSTOCKS = gql`
+    query GetOwnedStocks {
+        getOwnedStocks {
+            ownedStocks
         }
     }
 `;

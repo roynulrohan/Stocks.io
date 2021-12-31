@@ -18,6 +18,10 @@ export const verifyToken = ({ token }) => {
             userId = contentDecoded?.sub;
         }
 
+        if (!userId) {
+            return { error: 'Invalid Token' };
+        }
+
         return { userId };
     } catch (error) {
         return { error: 'Invalid Token' };

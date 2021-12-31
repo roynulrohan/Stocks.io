@@ -99,6 +99,33 @@ export const UserResolver = {
 
             return { newBalance: result.balance };
         },
+        changeUsername: async (_, { newUsername, confirmPassword }, context) => {
+            const token = context.req.headers.authorization;
+
+            const authResult = verifyToken({ token: token.split(' ')[1] });
+
+            if (authResult.error) {
+                throw new AuthenticationError(authResult.error);
+            }
+
+            const nameExists: any = await User.findOne({ username: newUsername });
+
+            if (nameExists) {
+                throw new ApolloError('Username already taken. Try another.');
+            }
+
+            const user: any = await User.findOne({ _id: authResult.userId });
+
+            const passResult = await bcrypt.compare(confirmPassword, user.password);
+
+            if (!passResult) {
+                throw new AuthenticationError('Invalid password, try again.');
+            }
+
+            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { username: newUsername }, { new: true });
+
+            return { newUsername: result.username };
+        },
     },
 
     Query: {

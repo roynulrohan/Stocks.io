@@ -1,65 +1,47 @@
 import React, { useEffect, useState } from 'react';
-import { useSocket } from '../contexts/SocketProvider';
-import { StockUpdate } from '../types';
 
 interface Props {
-    initialPrice: number;
+    currentPrice: number;
+    prevPrice: number;
     currency: string;
     ticker: string;
     styleset: string;
 }
 
-const PriceChange = React.memo(({ initialPrice, currency, ticker, styleset }: Props) => {
-    const socket: any = useSocket();
+const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, styleset }: Props) => {
     const [currencySymbol, setCurrencySymbol] = useState('$');
     const [isCAD, setIsCAD] = useState(false);
     const [priceChange, setPriceChange] = useState<number>(0);
     const [isGain, setIsGain] = useState(true);
-    const [price, setPrice] = useState<number>(initialPrice || 0);
-    const [prevPrice, setPrevPrice] = useState<number>(0);
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
+        if (ticker !== '') {
+            const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
 
-        if (sessionData.priceChange) {
-            setIsGain(sessionData?.isGain);
-            setPriceChange(sessionData?.priceChange);
+            if (sessionData.priceChange) {
+                setIsGain(sessionData?.isGain);
+                setPriceChange(sessionData?.priceChange);
+            }
         }
 
         setMounted(true);
     }, []);
 
     useEffect(() => {
-        if (socket === null) return;
-
-        socket?.on(ticker, (priceData: StockUpdate) => {
-            setPrice(priceData.price);
-        });
-
-        return () => {
-            socket && socket?.off(ticker);
-        };
-    }, [socket, ticker]);
-
-    useEffect(() => {
-        if (mounted) {
-            if (price >= prevPrice) {
-                setIsGain(true);
-                const change = ((price - prevPrice) / price) * 100;
-                setPriceChange(change);
-            } else {
-                setIsGain(false);
-                const change = ((prevPrice - price) / prevPrice) * 100;
-                setPriceChange(change);
+        if (ticker !== '') {
+            if (mounted) {
+                calculateChange();
             }
+        } else {
+            calculateChange();
         }
-
-        setPrevPrice(price);
-    }, [price]);
+    }, [currentPrice]);
 
     useEffect(() => {
-        window.sessionStorage.setItem(ticker + '-PriceChange', JSON.stringify({ isGain, priceChange }));
+        if (ticker !== '') {
+            window.sessionStorage.setItem(ticker + '-PriceChange', JSON.stringify({ isGain, priceChange }));
+        }
     }, [priceChange]);
 
     useEffect(() => {
@@ -72,18 +54,25 @@ const PriceChange = React.memo(({ initialPrice, currency, ticker, styleset }: Pr
         }
     }, [currency]);
 
+    const calculateChange = () => {
+        if (currentPrice >= prevPrice) {
+            setIsGain(true);
+            const change = ((currentPrice - prevPrice) / currentPrice) * 100;
+            setPriceChange(change);
+        } else {
+            setIsGain(false);
+            const change = ((prevPrice - currentPrice) / prevPrice) * 100;
+            setPriceChange(change);
+        }
+    };
+
     return (
-        <p
-            className={
-                'text-gray-900 mb-2 rounded-full px-2 py-1 ' +
-                styleset +
-                (isGain ? ' bg-green-300' : ' bg-red-400')
-            }>
+        <p className={'text-gray-900 rounded-full px-2 py-1 ' + styleset + (isGain ? ' bg-green-300' : ' bg-red-400')}>
             <span className='font-semibold'>
                 {currencySymbol}
-                {price.toFixed(2)}
+                {currentPrice.toFixed(2)}
             </span>{' '}
-            <span className='font-medium text-xs'>
+            <span className='font-medium'>
                 {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange?.toFixed(2) : ' -' + priceChange?.toFixed(2)}%
             </span>
         </p>

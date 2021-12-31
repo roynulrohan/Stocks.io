@@ -7,21 +7,10 @@
 * {
     font-family: 'Poppins', sans-serif;
     scrollbar-width: thin;
-    scrollbar-color: rgb(51, 51, 51) rgb(255, 255, 255);
 }
 
 body {
     margin: 0;
-}
-
-input:autofill,
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px white inset !important;
-    box-shadow: 0 0 0 30px white inset !important;
-    color: black !important;
 }
 
 *::-webkit-scrollbar {
@@ -45,4 +34,19 @@ input:-webkit-autofill:active {
     }
 
     scrollbar-color: rgb(73, 73, 73) theme('colors.darkBg');
+}
+
+.stock-card {
+    min-height: 440px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type='number'] {
+    -moz-appearance: textfield;
 }

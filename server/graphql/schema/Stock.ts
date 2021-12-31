@@ -22,7 +22,7 @@ export const StockTypeDef = gql`
     }
 
     type Query {
-        getStocks(search: String): stocks
+        getStocks(search: String, limit: Int, random: Boolean): stocks
         getStock(ticker: String): stock
     }
 `;

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
-import { useMutation } from '@apollo/client';
-import { AUTH } from '../constants/actions';
-import { LOGIN_USER, REGISTER_USER } from '../graphql';
+import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { AUTH, OWNED_STOCKS } from '../constants/actions';
+import { LOGIN_USER, REGISTER_USER, GET_OWNEDSTOCKS } from '../graphql';
 import { AuthState } from '../types';
 import CheckedIcon from '../assets/icons/checked.png';
 
@@ -16,6 +16,7 @@ interface LocationState {
 }
 
 const Auth = () => {
+    const [getOwnedStocks, { data: ownedStocksData }] = useLazyQuery(GET_OWNEDSTOCKS);
     const auth = useSelector((state: AuthState) => state.authReducer.authData);
     const [loginMutation] = useMutation(LOGIN_USER);
     const [registerMutation] = useMutation(REGISTER_USER);
@@ -47,12 +48,11 @@ const Auth = () => {
                 .then(({ data }) => {
                     setErrors('');
                     dispatch({ type: AUTH, payload: data?.registerUser });
-                    history.push(location?.state?.redirect);
+                    dispatch({ type: OWNED_STOCKS, payload: {} });
+                    history.push(location?.state?.redirect || '/market');
                 })
                 .catch((err) => {
                     setErrors(err?.message);
-                })
-                .finally(() => {
                     setIsLoading(false);
                 });
         } else {
@@ -60,12 +60,15 @@ const Auth = () => {
                 .then(({ data }) => {
                     setErrors('');
                     dispatch({ type: AUTH, payload: data?.loginUser });
-                    history.push(location?.state?.redirect);
+
+                    getOwnedStocks();
+
+                    if (ownedStocksData) {
+                        dispatch({ type: OWNED_STOCKS, payload: ownedStocksData?.getOwnedStocks?.ownedStocks });
+                    }
                 })
                 .catch((err) => {
                     setErrors(err?.message);
-                })
-                .finally(() => {
                     setIsLoading(false);
                 });
         }
@@ -76,7 +79,7 @@ const Auth = () => {
     };
 
     return (
-        <div className='dark:bg-darkBg w-full flex flex-auto items-center text-center'>
+        <div className='dark:bg-darkBg h-screen w-full flex flex-auto items-center text-center'>
             <div className='w-full max-w-sm mx-auto overflow-hidden bg-white dark:bg-darkField text-gray-700 dark:text-gray-200 rounded-2xl shadow-xl'>
                 {!auth?.user ? (
                     <>
@@ -225,7 +228,14 @@ const Auth = () => {
                         <div className='w-10 mb-5'>
                             <img src={CheckedIcon} alt='Checked Icon' className='' />
                         </div>
-                        <h3 className='mt-1 text-xl font-medium text-center text-gray-600 dark:text-gray-200'>You're already signed in!</h3>
+                        <h3 className='mt-1 text-xl font-medium text-center text-gray-600 dark:text-gray-200'>You're signed in!</h3>{' '}
+                        <div className='mt-8'>
+                            <Link
+                                to='/market'
+                                className='px-4 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-blue-600 rounded-md dark:bg-blue-800 hover:bg-blue-500 dark:hover:bg-blue-700 focus:outline-none focus:bg-blue-500 dark:focus:bg-blue-700'>
+                                Browse the Market
+                            </Link>
+                        </div>
                     </div>
                 )}
             </div>

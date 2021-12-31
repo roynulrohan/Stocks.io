@@ -1,58 +1,68 @@
 import React, { useEffect } from 'react';
 import './scss/style.scss';
 import { Route, Switch, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import ScrollToTop from './components/ScrollToTop';
 import { AnimatePresence } from 'framer-motion';
+import { useLazyQuery } from '@apollo/client';
+import { VERIFY_USER, GET_OWNEDSTOCKS } from './graphql';
+import { useDispatch } from 'react-redux';
+import { AUTH, OWNED_STOCKS } from './constants/actions';
+
+import NotFoundPage from './pages/NotFoundPage';
 import MarketPage from './pages/MarketPage';
 import StockPage from './pages/StockPage';
 import AuthPage from './pages/AuthPage';
-import { useLazyQuery } from '@apollo/client';
-import { VERIFY_USER } from './graphql';
-import { useDispatch } from 'react-redux';
-import { AUTH } from './constants/actions';
+import AccountPage from './pages/AccountPage';
+import HomePage from './pages/HomePage';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-    const [verifyUser, { data, loading }] = useLazyQuery(VERIFY_USER);
+    const [getOwnedStocks, { data: ownedStocksData, loading: ownedStockLoading }] = useLazyQuery(GET_OWNEDSTOCKS);
+    const [verifyUser, { data: userData, loading: userLoading }] = useLazyQuery(VERIFY_USER);
     const dispatch = useDispatch();
     const location = useLocation();
 
     useEffect(() => {
         verifyUser();
-        console.log(process.env);
     }, [verifyUser]);
 
     useEffect(() => {
-        if (data && !loading) {
-            dispatch({ type: AUTH, payload: data?.getUser });
+        if (userData && !userLoading) {
+            dispatch({ type: AUTH, payload: userData?.getUser });
         }
-    }, [data, loading, dispatch]);
+    }, [userData, userLoading, dispatch]);
+
+    useEffect(() => {
+        getOwnedStocks();
+    }, [getOwnedStocks]);
+
+    useEffect(() => {
+        if (ownedStocksData && !ownedStockLoading) {
+            dispatch({ type: OWNED_STOCKS, payload: ownedStocksData?.getOwnedStocks?.ownedStocks });
+        }
+    }, [ownedStocksData, ownedStockLoading, dispatch]);
 
     return (
         <AnimatePresence>
-            <div className='min-h-screen flex flex-col'>
-                <ScrollToTop>
-                    <Navbar />
-                    <Switch location={location} key={location.pathname}>
-                        <Route exact path='/'>
-                            <div className='dark:bg-darkBg h-full w-full min-h-screen'>
-                                <h1>Home</h1>
-                            </div>
-                        </Route>
-                        <Route exact path='/market'>
-                            <MarketPage />
-                        </Route>
-                        <Route exact path='/auth'>
-                            <AuthPage />
-                        </Route>
-                        <Route path='/stock'>
-                            <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
-                        </Route>
-                    </Switch>
-                    <Footer />
-                </ScrollToTop>
-            </div>
+            <ScrollToTop>
+                <Navbar />
+                <Switch location={location} key={location.pathname}>
+                    <Route exact path='/' render={() => <HomePage />} />
+                    <Route exact path='/market' render={() => <MarketPage />} />
+                    <Route exact path='/auth' render={() => <AuthPage />} />
+
+                    <Route exact path='/stock/:ticker'>
+                        <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
+                    </Route>
+
+                    <ProtectedRoute exact path='/account' comp={() => <AccountPage />} />
+
+                    <Route render={() => <NotFoundPage />} />
+                </Switch>
+                <Footer />
+            </ScrollToTop>
         </AnimatePresence>
     );
 }

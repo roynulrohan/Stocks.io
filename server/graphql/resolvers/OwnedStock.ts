@@ -5,17 +5,6 @@ import { verifyToken } from '../../middleware/auth';
 import { AuthenticationError, ApolloError } from 'apollo-server-express';
 import { Stock } from '../../models/Stock';
 
-async function clearFirstTransaction(userId) {
-    try {
-        const countTransactions = await Transaction.find({ userId: userId }).countDocuments();
-        if (countTransactions > 20) {
-            await Transaction.findOneAndDelete({ userId: userId }, { sort: { date: 1 } });
-        }
-    } catch (error) {
-        return { error: 'Failure to cleanup transaction logs!' };
-    }
-}
-
 export const OwnedStockResolver = {
     Query: {
         getOwnedStocks: async (_, args, context) => {
@@ -29,7 +18,9 @@ export const OwnedStockResolver = {
 
             const ownedStocks = await OwnedStock.find({ userId: result.userId }).sort({ ['userId']: 1 });
 
-            return { ownedStocks };
+            const object = Object.fromEntries(ownedStocks.map((stock: any) => [stock.ticker, stock]));
+
+            return { ownedStocks: object };
         },
         getOwnedStock: async (_, { ticker }, context) => {
             const token = context.req.headers.authorization;
@@ -75,6 +66,9 @@ export const OwnedStockResolver = {
 
                 await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: -cost } });
 
+                const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
+                await newTransaction.save();
+
                 response = { ownedStock, price: stock.price };
             } else {
                 const newOwnedStock = new OwnedStock({
@@ -86,6 +80,9 @@ export const OwnedStockResolver = {
 
                 const result = await newOwnedStock.save();
                 await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: -cost } });
+
+                const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
+                await newTransaction.save();
 
                 response = { ownedStock: result, price: stock.price };
             }
@@ -119,6 +116,16 @@ export const OwnedStockResolver = {
                     { $inc: { shares: -shares }, initialInvestment },
                     { new: true }
                 );
+
+                const newTransaction = new Transaction({
+                    userId: authResult.userId,
+                    type: 'SELL',
+                    ticker,
+                    shares,
+                    totalAmount: profit,
+                    stockPrice: stock.price,
+                });
+                await newTransaction.save();
 
                 if (result.shares === 0) {
                     await OwnedStock.findOneAndDelete({ userId: authResult.userId, ticker });

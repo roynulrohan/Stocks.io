@@ -18,12 +18,12 @@ const TransactionSchema = new Schema({
         required: true,
         min: 0,
     },
-    investment: {
+    totalAmount: {
         type: Number,
         required: true,
         min: 0,
     },
-    boughtAt: {
+    stockPrice: {
         type: Number,
         required: true,
         min: 0,

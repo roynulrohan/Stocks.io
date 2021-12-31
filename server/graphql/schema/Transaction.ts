@@ -1,14 +1,16 @@
 import { gql } from 'apollo-server-express';
 
 export const TransactionTypeDef = gql`
+    scalar Date
+
     type Transaction {
         userId: String!
         type: String!
         ticker: String!
         shares: Int!
-        investment: Float!
-        boughtAt: Float!
-        date: String!
+        totalAmount: Float!
+        stockPrice: Float!
+        date: Date!
     }
 
     type transactions {

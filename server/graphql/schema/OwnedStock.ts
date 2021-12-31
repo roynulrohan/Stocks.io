@@ -1,6 +1,8 @@
 import { gql } from 'apollo-server-express';
 
 export const OwnedStockTypeDef = gql`
+    scalar JSON
+
     type OwnedStock {
         userId: String!
         ticker: String!
@@ -9,7 +11,7 @@ export const OwnedStockTypeDef = gql`
     }
 
     type ownedStocks {
-        ownedStocks: [OwnedStock]
+        ownedStocks: JSON
     }
 
     type ownedStock {

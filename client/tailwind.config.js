@@ -8,6 +8,20 @@ module.exports = {
                 darkCard: '#292C38',
                 darkBg: '#24252D',
             },
+            minHeight: {
+                64: '16rem',
+                panel: '35rem',
+            },
+            minWidth: {
+                44: '11rem',
+                panel: '35rem',
+            },
+            height: {
+                panel: '35rem',
+            },
+            width: {
+                panel: '35rem',
+            },
         },
     },
     variants: {

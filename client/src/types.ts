@@ -8,7 +8,7 @@ interface Stock {
     ipo: string;
     country: string;
     currency: string;
-    weburl:string
+    weburl: string;
 }
 
 interface User {
@@ -38,4 +38,12 @@ interface AuthState {
     authReducer: AuthReducer;
 }
 
-export type { Stock, StockUpdate, StockState, AuthState };
+interface OwnedStocksReducer {
+    ownedStocks: any;
+}
+
+interface OwnedStocksState {
+    ownedStocksReducer: OwnedStocksReducer;
+}
+
+export type { Stock, StockUpdate, StockState, AuthState, OwnedStocksState };

@@ -24,8 +24,8 @@ export default function MarketPage() {
     }, [searchQuery, refetch]);
 
     return (
-        <div className='dark:bg-darkBg pb-10 h-full w-full min-h-screen flex flex-col items-center text-center'>
-            <div className='mt-20 text-3xl font-medium dark:text-white'>Browse the market.</div>
+        <div className='dark:bg-darkBg pb-10 min-h-screen w-full h-full flex flex-col items-center text-center'>
+            <div className='mt-40 text-3xl font-medium dark:text-white'>Browse the market.</div>
             <div className='mt-5 text-md px-5 md:text-xl text-gray-600 dark:text-gray-400'>Explore our selection of the biggest names in the industry.</div>
             <div className='mt-20 w-full flex flex-col'>
                 <div className='px-8 sm:px-12 md:px-14 lg:px-20 xl:px-60'>
