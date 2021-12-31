@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@apollo/client';
 import StockCard from '../components/StockCard';
@@ -8,6 +8,10 @@ import programmingSVG from '../assets/svgs/programming.svg';
 
 const HomePage = () => {
     const { data } = useQuery(GET_STOCKS, { variables: { limit: 3, random: true } });
+
+    useEffect(() => {
+        document.title =  'Home | Stocks.io';
+    }, []);
 
     return (
         <div className='dark:bg-darkBg flex flex-col min-h-screen items-center justify-center overflow-hidden'>

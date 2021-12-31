@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
@@ -28,6 +28,10 @@ const Auth = () => {
     const dispatch = useDispatch();
     const history = useHistory();
     const location = useLocation<LocationState>();
+
+    useEffect(() => {
+        document.title =  'Authorization | Stocks.io';
+    }, []);
 
     const switchMode = (e: any) => {
         setIsLoading(false);

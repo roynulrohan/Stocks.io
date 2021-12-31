@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 const NotFound = () => {
+    useEffect(() => {
+        document.title =  'Not Found | Stocks.io';
+    }, []);
+
     return (
         <div className='bg-white dark:bg-darkBg w-full h-screen text-center flex items-center'>
             <div className='max-w-2xl mx-auto py-64 bg-white dark:bg-darkBg flex items-center justify-center'>

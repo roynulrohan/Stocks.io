@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
@@ -26,6 +26,10 @@ const AccountPage = () => {
     const [newUsername, setNewUsername] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [isLoadingUsername, setIsloadingUsername] = useState(false);
+
+    useEffect(() => {
+        document.title = auth.user.username + ' | Stocks.io';
+    }, [auth.user.username]);
 
     const handleDeposit = () => {
         if (transferAmount > 0) {

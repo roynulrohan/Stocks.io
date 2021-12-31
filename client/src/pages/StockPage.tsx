@@ -28,6 +28,10 @@ export default function StockPage({ ticker }: Props) {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
+        document.title =  ticker + ' | Stocks.io';
+    }, [ticker]);
+
+    useEffect(() => {
         setStockData(data?.getStock?.stock);
     }, [data]);
 

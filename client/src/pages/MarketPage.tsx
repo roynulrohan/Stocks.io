@@ -12,6 +12,10 @@ export default function MarketPage() {
     };
 
     useEffect(() => {
+        document.title = 'Market | Stocks.io';
+    }, []);
+
+    useEffect(() => {
         if (searchQuery !== '') {
             refetch({
                 search: searchQuery,
