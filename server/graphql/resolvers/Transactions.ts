@@ -1,6 +1,6 @@
 import { Transaction } from '../../models/Transaction';
 import { verifyToken } from '../../middleware/auth';
-import { AuthenticationError, ApolloError } from 'apollo-server-express';
+import { AuthenticationError } from 'apollo-server-express';
 
 export const TransactionResolver = {
     Query: {
@@ -15,7 +15,7 @@ export const TransactionResolver = {
 
             const transactions = await Transaction.find({ userId: result.userId }).sort({ ['date']: -1 });
 
-            if (transactions.length > 15) {
+            if (transactions.length > 20) {
                 await Transaction.findOneAndDelete({ userId: result.userId }, { sort: { ['date']: 1 } });
             }
 

@@ -123,3 +123,33 @@ export const GET_OWNEDSTOCKS = gql`
         }
     }
 `;
+
+export const BUY_STOCK = gql`
+    mutation BuyStock($ticker: String!, $shares: Int!) {
+        buyStock(ticker: $ticker, shares: $shares) {
+            ownedStock {
+                _id
+                userId
+                ticker
+                shares
+                initialInvestment
+            }
+            price
+        }
+    }
+`;
+
+export const SELL_STOCK = gql`
+    mutation SellStock($ticker: String!, $shares: Int!) {
+        sellStock(ticker: $ticker, shares: $shares) {
+            ownedStock {
+                _id
+                userId
+                ticker
+                shares
+                initialInvestment
+            }
+            price
+        }
+    }
+`;

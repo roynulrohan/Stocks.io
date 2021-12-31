@@ -5,6 +5,17 @@ import { verifyToken } from '../../middleware/auth';
 import { AuthenticationError, ApolloError } from 'apollo-server-express';
 import { Stock } from '../../models/Stock';
 
+async function clearFirstTransaction(userId) {
+    try {
+        const countTransactions = await Transaction.find({ userId }).countDocuments();
+        if (countTransactions > 20) {
+            await Transaction.findOneAndDelete({ userId: userId }, { sort: { ['date']: 1 } });
+        }
+    } catch (error) {
+        return { error: 'Failure to cleanup transaction logs!' };
+    }
+}
+
 export const OwnedStockResolver = {
     Query: {
         getOwnedStocks: async (_, args, context) => {
@@ -87,6 +98,8 @@ export const OwnedStockResolver = {
                 response = { ownedStock: result, price: stock.price };
             }
 
+            clearFirstTransaction(authResult.userId);
+
             return response;
         },
         sellStock: async (_, { ticker, shares }, context) => {
@@ -137,6 +150,8 @@ export const OwnedStockResolver = {
             } else {
                 throw new ApolloError('Stock not owned');
             }
+            
+            clearFirstTransaction(authResult.userId);
 
             return response;
         },

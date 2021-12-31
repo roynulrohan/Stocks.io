@@ -1,9 +1,12 @@
 import PriceChart from '../components/PriceChart';
 import PriceChange from '../components/PriceChange';
-import { useSelector, useDispatch } from 'react-redux';
+import TransactionModal from '../components/TransactionModal';
+import { useLocation } from 'react-router';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import { useQuery } from '@apollo/client';
-import { useEffect, useRef, useState } from 'react';
-import { Stock, OwnedStocksState, StockUpdate } from '../types';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Stock, OwnedStocksState, StockUpdate, AuthState } from '../types';
 import { GET_STOCK } from '../graphql';
 import { useSocket } from '../contexts/SocketProvider';
 interface Props {
@@ -11,7 +14,10 @@ interface Props {
 }
 
 export default function StockPage({ ticker }: Props) {
+    const auth = useSelector((state: AuthState) => state.authReducer.authData);
     const socket: any = useSocket();
+    const history = useHistory();
+    const location = useLocation();
     const ownedStock = useSelector((state: OwnedStocksState) => state?.ownedStocksReducer?.ownedStocks?.[ticker]);
     const { data } = useQuery(GET_STOCK, {
         variables: { ticker },
@@ -19,6 +25,7 @@ export default function StockPage({ ticker }: Props) {
     const [stockData, setStockData] = useState<Stock>();
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
     const prevPrice = useRef(-1);
+    const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
         setStockData(data?.getStock?.stock);
@@ -42,8 +49,28 @@ export default function StockPage({ ticker }: Props) {
         }
     }, [currentPrice]);
 
+    const toggleModal = useCallback(() => {
+        if (auth) {
+            setModalVisible((prev) => !prev);
+        } else {
+            history.push({ pathname: '/auth', state: { redirect: location.pathname } });
+        }
+    }, [auth, history, location.pathname]);
+
     return (
-        <div className='dark:bg-darkBg mt-14 min-h-screen w-full flex flex-col'>
+        <div className='dark:bg-darkBg mt-16 min-h-screen w-full flex flex-col'>
+            {data?.getStock?.stock?.price && (
+                <TransactionModal
+                    id={ticker + '-transactionModal'}
+                    isHidden={!modalVisible}
+                    toggle={toggleModal}
+                    ticker={stockData?.ticker}
+                    exchange={stockData?.exchange}
+                    currentPrice={currentPrice !== -1 ? currentPrice : data?.getStock?.stock?.price}
+                    sharesOwned={ownedStock?.shares}
+                />
+            )}
+
             <div className='flex justify-start lg:justify-center items-start overflow-x-scroll md:overflow-hidden p-10'>
                 <div>
                     <div className='dark:bg-darkCard bg-gray-100 rounded-xl flex flex-col justify-between mb-5'>
@@ -115,7 +142,10 @@ export default function StockPage({ ticker }: Props) {
                             </div>
 
                             <div className='mt-6 mb-2 text-gray-700 dark:text-gray-200 text-center sm:block'>
-                                <button className='w-full px-20 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-blue-500 rounded-md dark:bg-blue-700 hover:bg-blue-600 dark:hover:bg-blue-600 focus:outline-none focus:bg-blue-500 dark:focus:bg-blue-600'>
+                                <button
+                                    className='w-full px-20 py-2 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-blue-500 rounded-md dark:bg-blue-600 hover:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none focus:bg-blue-500 dark:focus:bg-blue-600'
+                                    type='button'
+                                    onClick={toggleModal}>
                                     Buy{ownedStock && ' / Sell'}
                                 </button>
                             </div>

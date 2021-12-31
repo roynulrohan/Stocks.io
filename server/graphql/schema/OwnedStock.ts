@@ -4,6 +4,7 @@ export const OwnedStockTypeDef = gql`
     scalar JSON
 
     type OwnedStock {
+        _id: String!
         userId: String!
         ticker: String!
         shares: Int!

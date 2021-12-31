@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useMutation, useLazyQuery } from '@apollo/client';
@@ -36,7 +36,6 @@ const Auth = () => {
 
     const handleSubmitGuestAccount = (e: any) => {
         e.preventDefault();
-        setIsLoadingGuest(true);
     };
 
     const handleSubmit = (e: any) => {
@@ -170,8 +169,10 @@ const Auth = () => {
                                     </button>
                                 </div>
                             </form>
-
-                            <div className='flex items-center justify-between mt-4'>
+                            {
+                                // GUEST ACCOUNT BUTTON
+                            }
+                            {/* <div className='flex items-center justify-between mt-4'>
                                 <span className='w-1/5 border-b dark:border-gray-600 lg:w-1/5'></span>
 
                                 <span className='text-xs text-center text-gray-500 uppercase dark:text-gray-400 hover:underline'>
@@ -184,8 +185,9 @@ const Auth = () => {
                             <div className='flex items-center justify-center mt-6'>
                                 <form onSubmit={handleSubmitGuestAccount} className='w-full'>
                                     <button
+                                        disabled
                                         type='submit'
-                                        className='w-full px-4 py-2 text-sm leading-5 text-white transition-colors duration-200 transform dark:bg-gray-700 bg-gray-500 rounded hover:bg-gray-600 focus:outline-none flex flex-row items-center justify-center'>
+                                        className='w-full px-4 py-2 cursor-not-allowed text-sm leading-5 text-white transition-colors duration-200 transform dark:bg-gray-700 bg-gray-500 rounded hover:bg-gray-600 focus:outline-none flex flex-row items-center justify-center'>
                                         {isLoadingGuest && !errors && (
                                             <svg
                                                 className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
@@ -207,10 +209,10 @@ const Auth = () => {
                                                 d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z'
                                             />
                                         </svg>
-                                        <span className='hidden mx-2 sm:inline'>Try with Guest Account</span>
+                                        <span className='hidden mx-2 sm:inline'>Try with Guest Account </span>
                                     </button>
                                 </form>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className='flex items-center justify-center py-4 text-center bg-gray-100 dark:bg-gray-800'>
