@@ -1,7 +1,7 @@
-import { useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import StockCard from '../components/StockCard';
 import { GET_STOCKS } from '../graphql';
+import { useQuery } from '@apollo/client';
 
 export default function MarketPage() {
     const { data, refetch } = useQuery(GET_STOCKS);

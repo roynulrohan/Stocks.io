@@ -1,49 +1,22 @@
-version: '3.7'
-
+version: '3.9'
 services:
-  server:
+  web:
     build:
-      context: ./server
+      context: .
       dockerfile: Dockerfile
-    image: roynulrohan/stocks.io-server
-    container_name: stocks.io-server
-    command: npm start
-    volumes:
-      - ./server/src:/usr/app/src
     ports:
-      - 4000:4000
+      - "4000:4000"
+    networks:
+      - stocks-io-network
     environment:
-      - NODE_ENV=development
+      - REACT_APP_API_URI='http://localhost:4000'
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DB=${MONGO_DB}
       - JWT_SECRET=${JWT_SECRET}
-    networks:
-      - stocks.io-network
-    
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: roynulrohan/stocks.io-client
-    container_name: stocks.io-client
-    command: npm start
-    stdin_open: true
-    environment:
-      - REACT_APP_API_URI=http://localhost:4000
-    volumes:
-      - ./client/src:/usr/app/src
-      - ./client/public:/usr/app/public-
-      - ./client/node_modules:/usr/app/node_modules
-    depends_on:
-      - server
-    ports:
-      - 3000:3000
-    networks:
-      - stocks.io-network
 
 networks:
-    stocks.io-network:
+    stocks-io-network:
         driver: bridge
 
 volumes:

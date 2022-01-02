@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+// @ts-ignore
 import { Chart, registerables } from 'chart.js';
 import { motion } from 'framer-motion';
 
@@ -80,6 +81,7 @@ const PriceChart = React.memo((props: any) => {
             },
         };
 
+        // @ts-ignore
         chartDrawn.current = new Chart(ctx, {
             type: 'line',
             data: data.current,

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory, useLocation } from 'react-router-dom';
-import { useMutation, useLazyQuery } from '@apollo/client';
 import { AUTH, OWNED_STOCKS } from '../constants/actions';
 import { LOGIN_USER, REGISTER_USER, GET_OWNEDSTOCKS } from '../graphql';
 import { AuthState } from '../types';
+import { useMutation, useLazyQuery } from '@apollo/client';
+// @ts-ignore
 import CheckedIcon from '../assets/icons/checked.png';
 
 const initialState = { username: '', password: '', confirmPassword: '' };
@@ -30,7 +31,7 @@ const Auth = () => {
     const location = useLocation<LocationState>();
 
     useEffect(() => {
-        document.title =  'Authorization | Stocks.io';
+        document.title = 'Authorization | Stocks.io';
     }, []);
 
     const switchMode = (e: any) => {

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Tab } from '@headlessui/react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
-import { useQuery, useMutation } from '@apollo/client';
 import { GET_TRANSACTIONS, DEPOSIT, WITHDRAW, CHANGE_USERNAME } from '../graphql';
 import { UPDATE_BALANCE, UPDATE_USERNAME } from '../constants/actions';
+import { Tab } from '@headlessui/react';
+import { useQuery, useMutation } from '@apollo/client';
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
@@ -37,7 +37,7 @@ const AccountPage = () => {
             setIsLoadingDeposit(true);
 
             depositMutation({ variables: { amount: transferAmount } })
-                .then(({ data }) => {
+                .then(({ data }: any) => {
                     setTimeout(() => {
                         setErrors('');
                         dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.deposit.newBalance } });
@@ -108,7 +108,7 @@ const AccountPage = () => {
                                     classNames(
                                         selected
                                             ? 'dark:bg-darkField dark:text-white bg-gray-100'
-                                            : 'dark:text-gray-300 dark:hover:bg-darkField dark:hover:text-white hover:bg-gray-100 hover:border-b-2',
+                                            : 'dark:text-gray-300 dark:hover:bg-darkField dark:hover:text-white hover:bg-gray-100',
                                         'text-black px-5 py-2 text-md text-center rounded-2xl flex items-center'
                                     )
                                 }>
@@ -128,7 +128,7 @@ const AccountPage = () => {
                                     classNames(
                                         selected
                                             ? 'dark:bg-darkField dark:text-white bg-gray-100'
-                                            : 'dark:text-gray-300 dark:hover:bg-darkField dark:hover:text-white hover:bg-gray-100 hover:border-b-2',
+                                            : 'dark:text-gray-300 dark:hover:bg-darkField dark:hover:text-white hover:bg-gray-100',
                                         'text-black px-5 py-2 text-md text-center rounded-2xl flex items-center'
                                     )
                                 }>

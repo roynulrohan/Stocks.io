@@ -2,8 +2,8 @@
     Toggle switch for dark mode
 */
 
-import { Switch } from '@headlessui/react';
 import { useDarkMode } from '../hooks/useDarkMode';
+import { Switch } from '@headlessui/react';
 
 export default function ToggleDarkMode() {
     const [isDark, setIsDark] = useDarkMode();

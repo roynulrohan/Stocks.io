@@ -1,14 +1,14 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Disclosure, Menu, Transition } from '@headlessui/react';
-import { ChevronDownIcon, ChevronUpIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-import { useLocation } from 'react-router';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 import ToggleDarkMode from './ToggleDarkMode';
-import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
 import { LOGOUT } from '../constants/actions';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Disclosure, Menu, Transition } from '@headlessui/react';
+import { ChevronDownIcon, ChevronUpIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
+// @ts-ignore
+import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
 
 const navigation = [
     { name: 'Home', redirect: '/', current: true },
@@ -78,7 +78,7 @@ export default function NavBar() {
                                                         className={classNames(
                                                             location.pathname === item.redirect
                                                                 ? 'dark:bg-darkField dark:text-white bg-gray-100'
-                                                                : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100 hover:border-b-2',
+                                                                : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
                                                             'text-black px-3 py-2 rounded-md text-sm flex items-center'
                                                         )}
                                                         aria-current={location.pathname === item.redirect ? 'page' : undefined}>
@@ -98,7 +98,7 @@ export default function NavBar() {
                                                                 className={classNames(
                                                                     location.pathname === '/portfolio'
                                                                         ? 'dark:bg-darkField dark:text-white bg-gray-100'
-                                                                        : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100 hover:border-b-2',
+                                                                        : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
                                                                     'text-black px-3 py-2 rounded-md text-sm flex items-center'
                                                                 )}
                                                                 aria-current={location.pathname === '/portfolio' ? 'page' : undefined}>
@@ -169,7 +169,7 @@ export default function NavBar() {
                                                         className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'
                                                         hidden={!isAuthenticated}>
                                                         <Menu.Item>
-                                                            {({ active }) => (
+                                                            {({ active }: any) => (
                                                                 <Link
                                                                     to='/account'
                                                                     className={classNames(
@@ -181,7 +181,7 @@ export default function NavBar() {
                                                             )}
                                                         </Menu.Item>
                                                         <Menu.Item>
-                                                            {({ active }) => (
+                                                            {({ active }: any) => (
                                                                 <Link
                                                                     to='/portfolio'
                                                                     className={classNames(
@@ -193,7 +193,7 @@ export default function NavBar() {
                                                             )}
                                                         </Menu.Item>
                                                         <Menu.Item>
-                                                            {({ active }) => (
+                                                            {({ active }: any) => (
                                                                 <div
                                                                     onClick={handleSignOut}
                                                                     className={classNames(

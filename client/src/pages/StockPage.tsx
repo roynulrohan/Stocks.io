@@ -1,14 +1,13 @@
 import PriceChart from '../components/PriceChart';
 import PriceChange from '../components/PriceChange';
 import TransactionModal from '../components/TransactionModal';
-import { useLocation } from 'react-router';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useQuery } from '@apollo/client';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Stock, OwnedStocksState, StockUpdate, AuthState } from '../types';
 import { GET_STOCK } from '../graphql';
 import { useSocket } from '../contexts/SocketProvider';
+import { useQuery } from '@apollo/client';
 interface Props {
     ticker: string;
 }
@@ -28,7 +27,7 @@ export default function StockPage({ ticker }: Props) {
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
-        document.title =  ticker + ' | Stocks.io';
+        document.title = ticker + ' | Stocks.io';
     }, [ticker]);
 
     useEffect(() => {

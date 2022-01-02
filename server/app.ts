@@ -3,7 +3,7 @@ import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path from 'path'
+import path from 'path';
 import { Server } from 'socket.io';
 import { updateStockPrices, startUpdatingStocks } from './sockets/market';
 import schema from './graphql/schema';
@@ -20,12 +20,13 @@ const server = new ApolloServer({
     },
 });
 
+app.use(express.static(path.join(__dirname, '../client/build')));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(express.static(path.join(__dirname, '../client/build')));
 app.get('*', (req, res) => {
     console.log(__dirname);
-    res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
 server.start().then(() => server.applyMiddleware({ app }));

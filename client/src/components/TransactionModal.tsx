@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Switch } from '@headlessui/react';
-import { useMutation } from '@apollo/client';
 import { BUY_STOCK, SELL_STOCK } from '../graphql';
 import { useDispatch } from 'react-redux';
 import { UPDATE_STOCK } from '../constants/actions';
+import { Switch } from '@headlessui/react';
+import { useMutation } from '@apollo/client';
+// @ts-ignore
 import checkIcon from '../assets/icons/checked.png';
 
 interface Props {
