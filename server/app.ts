@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, '../client/build')));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.get('*', (req, res) => {
-    console.log(__dirname);
+    console.log(req.protocol + '://' + req.get('host') + req.originalUrl);
     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
 
@@ -44,7 +44,9 @@ mongoose
         console.log('Started updating all stocks without socket emits');
     });
 
-const http = app.listen(process.env.PORT || 4000, () => console.log(`Server is running at http://localhost:${process.env.PORT || 4000}${server.graphqlPath}`));
+const port = process.env.PORT || 443;
+
+const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}${server.graphqlPath}`));
 const io = new Server(http);
 
 let refreshIntervalId = null;

@@ -27,8 +27,8 @@ COPY server/package*.json ./
 RUN npm install -qy
 COPY server/ ./
 
-ENV PORT 4000
+ENV PORT 443
 
-EXPOSE 4000
+EXPOSE 443
 
 CMD ["npm", "start"]

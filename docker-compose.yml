@@ -5,11 +5,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "4000:4000"
+      - "443:443"
     networks:
       - stocks-io-network
     environment:
-      - REACT_APP_API_URI='http://localhost:4000'
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DB=${MONGO_DB}

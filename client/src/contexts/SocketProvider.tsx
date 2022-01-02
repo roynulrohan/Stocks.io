@@ -12,7 +12,8 @@ interface Params {
 }
 
 export function SocketProvider({ children }: Params) {
-    const socket: any = io(process.env.REACT_APP_API_URI || '', {
+    console.log(process.env.REACT_APP_API_URI, window.location.origin);
+    const socket: any = io(process.env.REACT_APP_API_URI || window.location.origin, {
         timeout: 10001,
         transports: ['websocket'],
     });
