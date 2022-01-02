@@ -1,11 +1,11 @@
-version: '3'
+version: '3.7'
 
 services:
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
-    image: stocks.io-server
+    image: roynulrohan/stocks.io-server
     container_name: stocks.io-server
     command: npm start
     volumes:
@@ -25,14 +25,16 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
-    image: stocks.io-client
+    image: roynulrohan/stocks.io-client
     container_name: stocks.io-client
     command: npm start
+    stdin_open: true
     environment:
       - REACT_APP_API_URI=http://localhost:4000
     volumes:
       - ./client/src:/usr/app/src
-      - ./client/public:/usr/app/public
+      - ./client/public:/usr/app/public-
+      - ./client/node_modules:/usr/app/node_modules
     depends_on:
       - server
     ports:

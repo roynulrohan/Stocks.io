@@ -1,0 +1,6 @@
+{
+    "scripts": {
+        "start": "cd server && npm install && node app",
+        "heroku-postbuild": "cd client && npm install && npm run build"
+    }
+}
