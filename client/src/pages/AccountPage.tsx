@@ -154,7 +154,7 @@ const AccountPage = () => {
                                                 <h2 className='text-lg font-semibold text-gray-700 capitalize dark:text-gray-200'>Balance</h2>
                                                 <div className='h-full pt-3'>
                                                     <div className='flex flex-col h-full space-y-4 justify-evenly item-center'>
-                                                        <div className='flex'>
+                                                        <div className='flex justify-between'>
                                                             <div>
                                                                 <h3 className='text-gray-700 dark:text-gray-200'>
                                                                     Current Balance:&nbsp;
@@ -187,9 +187,29 @@ const AccountPage = () => {
                                                                     />
                                                                 </div>
                                                             </div>
-                                                            {
-                                                                // TODO PAYMENT METHOD SELECT
-                                                            }
+                                                            <div className='w-full md:w-1/3 px-3 mb-6 md:mb-0'>
+                                                                <label
+                                                                    className='text-gray-700 dark:text-gray-200'
+                                                                    htmlFor='payment-method'>
+                                                                    Payment Method
+                                                                </label>
+                                                                <div className='relative mt-4'>
+                                                                    <select
+                                                                        className='block appearance-none w-full h-full text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 py-3 px-4 pr-8 leading-tight focus:outline-none'
+                                                                        id='payment-method'>
+                                                                        <option>VISA **** 1021</option>
+                                                                        <option>SAVINGS **** 1002</option>
+                                                                    </select>
+                                                                    <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700'>
+                                                                        <svg
+                                                                            className='fill-current h-4 w-4'
+                                                                            xmlns='http://www.w3.org/2000/svg'
+                                                                            viewBox='0 0 20 20'>
+                                                                            <path d='M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z' />
+                                                                        </svg>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                         <h5 className='text-center text-sm font-light'>Enter amount or select</h5>
                                                         <div className='flex justify-center items-center space-x-1 md:space-x-5'>
@@ -224,11 +244,11 @@ const AccountPage = () => {
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        <div className='flex space-x-5'>
+                                                        <div className='flex space-x-5 pt-5'>
                                                             <button
                                                                 onClick={handleDeposit}
                                                                 disabled={isLoadingWithDraw || isLoadingDeposit}
-                                                                className='w-full flex justify-center px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:bg-green-600'>
+                                                                className='w-full flex justify-center px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-green-400 rounded-md hover:bg-green-500 focus:outline-none focus:bg-green-600'>
                                                                 {isLoadingDeposit && !errors && (
                                                                     <svg
                                                                         className='animate-spin -ml-1 mr-3 h-5 w-5 text-white'
@@ -256,8 +276,8 @@ const AccountPage = () => {
                                                                 className={classNames(
                                                                     transferAmount > auth?.user?.balance
                                                                         ? 'cursor-not-allowed bg-red-800'
-                                                                        : 'hover:bg-red-800 focus:bg-red-800',
-                                                                    'w-full flex justify-center px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-red-700 rounded-md focus:outline-none'
+                                                                        : 'hover:bg-red-700 focus:bg-red-700',
+                                                                    'w-full flex justify-center px-6 py-2 leading-5 text-white transition-colors duration-200 transform bg-red-600 rounded-md focus:outline-none'
                                                                 )}>
                                                                 {isLoadingWithDraw && !errors && (
                                                                     <svg
@@ -293,14 +313,15 @@ const AccountPage = () => {
                                                     }}>
                                                     <div className='grid grid-cols-1 gap-6 mt-4 sm:grid-cols-2'>
                                                         <div>
-                                                            <label className='text-gray-700 dark:text-gray-200' htmlFor='username'>
+                                                            <label className='text-gray-700 dark:text-gray-200' htmlFor='newUsername'>
                                                                 New Username
                                                             </label>
                                                             <input
                                                                 required
-                                                                id='username'
+                                                                id='newUsername'
                                                                 type='text'
-                                                                name='username'
+                                                                name='newUsername'
+                                                                autoComplete='off'
                                                                 value={newUsername}
                                                                 onChange={(e) => {
                                                                     setNewUsername(e.target.value);

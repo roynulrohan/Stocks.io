@@ -57,6 +57,7 @@ function App() {
                         <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
                     </Route>
 
+                    <Route exact path='/portfolio' render={() => <NotFoundPage underConstruction />} />
                     <ProtectedRoute exact path='/account' comp={() => <AccountPage />} />
 
                     <Route render={() => <NotFoundPage />} />

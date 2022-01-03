@@ -26,7 +26,7 @@ export const OwnedStockTypeDef = gql`
 
     type stockTransactionResponse {
         ownedStock: OwnedStock!
-        price: Float!
+        newBalance: Float!
     }
 
     type Mutation {

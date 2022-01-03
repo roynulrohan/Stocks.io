@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-const NotFound = () => {
+const NotFound = ({ underConstruction = false }) => {
     useEffect(() => {
-        document.title =  'Not Found | Stocks.io';
+        document.title = 'Not Found | Stocks.io';
     }, []);
 
     return (
@@ -12,9 +12,15 @@ const NotFound = () => {
                 <div className='p-6'>
                     <div>
                         <span className='text-xs font-medium text-blue-600 uppercase dark:text-blue-400'>Error 404</span>
-                        <h1 className='block mt-2 text-2xl font-semibold text-gray-800 dark:text-white hover:text-gray-600'>
-                            Oops! Couldn't find the the page <code className='text-red-900 dark:text-red-600'>{window.location.pathname}</code>
-                        </h1>
+                        {underConstruction ? (
+                            <h1 className='block mt-2 text-2xl font-semibold text-gray-800 dark:text-white hover:text-gray-600'>
+                                Oops! <code className='text-red-900 dark:text-red-600'>{window.location.pathname}</code> is currently under maintenance.
+                            </h1>
+                        ) : (
+                            <h1 className='block mt-2 text-2xl font-semibold text-gray-800 dark:text-white hover:text-gray-600'>
+                                Oops! Couldn't find the the page <code className='text-red-900 dark:text-red-600'>{window.location.pathname}</code>
+                            </h1>
+                        )}
                     </div>
 
                     <div className='mt-8'>

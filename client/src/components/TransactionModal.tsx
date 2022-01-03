@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BUY_STOCK, SELL_STOCK } from '../graphql';
 import { useDispatch } from 'react-redux';
-import { UPDATE_STOCK } from '../constants/actions';
+import { UPDATE_BALANCE, UPDATE_STOCK } from '../constants/actions';
 import { Switch } from '@headlessui/react';
 import { useMutation } from '@apollo/client';
 // @ts-ignore
@@ -28,10 +28,25 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
     const [isLoading, setIsLoading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
     const [completionDetails, setCompletionDetails] = useState('');
+    const incrementTimer = useRef<any>(null);
 
     useEffect(() => {
         setTotal((shares || 0) * currentPrice);
     }, [currentPrice, shares]);
+
+    const holdIncrementShares = () => {
+        incrementTimer.current = setInterval(() => setShares((prev) => prev + 1), 50);
+    };
+
+    const holdDecrementShares = () => {
+        if (shares !== 0) {
+            incrementTimer.current = setInterval(() => setShares((prev) => prev - 1), 50);
+        }
+    };
+
+    const clearIncrementTimer = () => {
+        clearInterval(incrementTimer.current);
+    };
 
     const closeModal = () => {
         setIsSelling(false);
@@ -72,6 +87,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                         setTimeout(() => {
                             setErrors('');
                             dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.sellStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.sellStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -86,6 +102,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                         setTimeout(() => {
                             setErrors('');
                             dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.buyStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.buyStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -151,6 +168,13 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                         setShares((shares) => shares - 1);
                                                     }
                                                 }}
+                                                onMouseDown={() => {
+                                                    if (shares >= 0) {
+                                                        holdDecrementShares();
+                                                    }
+                                                }}
+                                                onMouseUp={clearIncrementTimer}
+                                                onMouseLeave={clearIncrementTimer}
                                                 className='absolute h-full bg-gray-200 dark:bg-darkCard flex justify-center items-center text-gray-900 dark:text-gray-200 rounded-l-2xl px-5 w-5 left-0 select-none cursor-pointer'>
                                                 -
                                             </span>
@@ -167,6 +191,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                 name='shares'
                                                 id='shares'
                                                 min={0}
+                                                max={10000}
                                                 className='h-8 w-full mx-10 border-none outline-none bg-gray-100 dark:bg-darkCard text-gray-900 dark:text-gray-200 p-2 text-center sm:text-sm'
                                                 placeholder='0'
                                             />
@@ -174,6 +199,11 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                 onClick={() => {
                                                     setShares((shares) => shares + 1);
                                                 }}
+                                                onMouseDown={() => {
+                                                    holdIncrementShares();
+                                                }}
+                                                onMouseUp={clearIncrementTimer}
+                                                onMouseLeave={clearIncrementTimer}
                                                 className='absolute h-full bg-gray-200 dark:bg-darkCard flex justify-center items-center text-gray-900 dark:text-gray-200 rounded-r-2xl px-5 w-5 right-0 select-none cursor-pointer'>
                                                 +
                                             </span>

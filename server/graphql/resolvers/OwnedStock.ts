@@ -80,7 +80,7 @@ export const OwnedStockResolver = {
                 const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
                 await newTransaction.save();
 
-                response = { ownedStock, price: stock.price };
+                response = { ownedStock, price: stock.price, newBalance: user.balance - cost };
             } else {
                 const newOwnedStock = new OwnedStock({
                     userId: authResult.userId,
@@ -95,7 +95,7 @@ export const OwnedStockResolver = {
                 const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
                 await newTransaction.save();
 
-                response = { ownedStock: result, price: stock.price };
+                response = { ownedStock: result, newBalance: user.balance - cost };
             }
 
             clearFirstTransaction(authResult.userId);
@@ -144,13 +144,13 @@ export const OwnedStockResolver = {
                     await OwnedStock.findOneAndDelete({ userId: authResult.userId, ticker });
                 }
 
-                await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: profit } });
+                const user: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: profit } }, { new: true });
 
-                response = { ownedStock: result, price: stock.price };
+                response = { ownedStock: result, newBalance: user.balance };
             } else {
                 throw new ApolloError('Stock not owned');
             }
-            
+
             clearFirstTransaction(authResult.userId);
 
             return response;

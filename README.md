@@ -118,7 +118,7 @@ First, install the necessary packages via:
 npm i
 ```
 
-Setup the `.env` file in the root of the `/client` directory. (**Note**: this will be gitignored)
+(Optional) Setup the `.env` file in the root of the `/client` directory. (**Note**: this will be gitignored)
 
 ```bash
 # URI of API server along with the port

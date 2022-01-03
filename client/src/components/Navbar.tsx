@@ -111,7 +111,7 @@ export default function NavBar() {
                                                             animate={{ y: 0, opacity: 1 }}
                                                             exit={{ y: -15, opacity: 0 }}
                                                             transition={{ duration: 0.25 }}
-                                                            className='text-black dark:bg-green-400 bg-green-300 rounded-xl text-sm flex items-center transition-all'>
+                                                            className='text-black bg-green-300 rounded-xl text-sm flex items-center transition-all'>
                                                             <Link to='/account' className='px-3 py-2 '>
                                                                 Balance:&nbsp;
                                                                 <span className='font-bold'>

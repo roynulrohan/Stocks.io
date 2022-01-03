@@ -182,7 +182,7 @@ export default function StockPage({ ticker }: Props) {
                                     <h1 className='px-2 w-full'>
                                         <span>Investment &nbsp;</span>
                                     </h1>
-                                    <span className='rounded-xl bg-yellow-200 dark:bg-yellow-600 text-yellow-600 dark:text-yellow-100 p-1 px-2 font-semibold'>
+                                    <span className='rounded-xl bg-yellow-200 dark:bg-yellow-300 text-yellow-600 dark:text-yellow-800 p-1 px-2 font-semibold'>
                                         {new Intl.NumberFormat('en-US', {
                                             style: 'currency',
                                             currency: 'USD',
@@ -193,7 +193,7 @@ export default function StockPage({ ticker }: Props) {
                                 </div>
                                 <div className='flex items-center text-gray-700 dark:text-gray-200'>
                                     <h1 className='px-2 w-full'>Hash &nbsp;</h1>
-                                    <span className='rounded-xl bg-indigo-200 dark:bg-indigo-700 text-indigo-500 dark:text-indigo-200 p-1 px-2 font-semibold'>
+                                    <span className='rounded-xl bg-indigo-200 dark:bg-purple-500 text-indigo-500 dark:text-indigo-100 p-1 px-2 font-semibold'>
                                         {'#' + ownedStock?._id}
                                     </span>
                                 </div>

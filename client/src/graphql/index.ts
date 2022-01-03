@@ -134,7 +134,7 @@ export const BUY_STOCK = gql`
                 shares
                 initialInvestment
             }
-            price
+            newBalance
         }
     }
 `;
@@ -149,7 +149,7 @@ export const SELL_STOCK = gql`
                 shares
                 initialInvestment
             }
-            price
+            newBalance
         }
     }
 `;
