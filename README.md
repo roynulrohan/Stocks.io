@@ -9,6 +9,7 @@ Stock<span/>.io is a trading and investment simulation platform developed with t
 - [Stack](#stack)<br/>
 - [Data](#data)<br/>
 - [Development](#development)<br/>
+- [Screenshots](#screenshots)<br/>
 
 ## Stack
 
@@ -132,3 +133,14 @@ Now you can run the clientproject.
 # start react app
 npm start
 ```
+
+## Screenshots
+
+Home Page
+![](misc/Home-Page.png)
+Market Page
+![](misc/Market-Page.png)
+Stock Page
+![](misc/Stock-Page.png)
+Account Page
+![](misc/Account-Page.png)
