@@ -2,7 +2,7 @@
 
 ## Overview
 
-Stock<span/>.io is a trading and investment simulation platform developed with the [MERN](https://www.mongodb.com/mern-stack) stack and utilizing [Socket.io](https://socket.io/) for real time price updates. It is only a dummy portfolio project and does not represent real stock values or transactions.
+Stock<span/>.io is a trading and investment simulation platform developed with the [MERN](https://www.mongodb.com/mern-stack) stack and utilizing [Socket.io](https://socket.io/) for real time price updates. It is only a dummy portfolio project and does not represent real stock values or transactions. This idea for this project was inspired by [Jacky Tea](https://github.com/JackyTea), who created a similar application.
 
 ## Table of Contents
 
