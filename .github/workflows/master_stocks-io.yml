@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: https://index.docker.io/v1/
-        username: ${{ secrets.AzureAppService_ContainerUsername_4d206fb0495c411c9a727f1dce183606 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_0534bf54c62642f5be08ab643fcb48c9 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_8e146d306ed644f4bec2a381cf85eff4 }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_08f8ce97e4f0498bae408b25c55ba013 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4d206fb0495c411c9a727f1dce183606 }}/stocksio:${{ github.sha }}
+        tags: index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8e146d306ed644f4bec2a381cf85eff4 }}/stocksio:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'stocks-io'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4041c0825dad47dfbc97c145c4a85bb9 }}
-        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_4d206fb0495c411c9a727f1dce183606 }}/stocksio:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_fbf7f419d9bc4d11853e8f6addaacc87 }}
+        images: 'index.docker.io/${{ secrets.AzureAppService_ContainerUsername_8e146d306ed644f4bec2a381cf85eff4 }}/stocksio:${{ github.sha }}'
