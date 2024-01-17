@@ -17,6 +17,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
+import PortfolioPage from './pages/PortfolioPage';
 
 function App() {
     const [getOwnedStocks, { data: ownedStocksData, loading: ownedStockLoading }] = useLazyQuery(GET_OWNEDSTOCKS);
@@ -57,7 +58,7 @@ function App() {
                         <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
                     </Route>
 
-                    <Route exact path='/portfolio' render={() => <NotFoundPage underConstruction />} />
+                    <Route exact path='/portfolio' render={() => <PortfolioPage />} />
                     <ProtectedRoute exact path='/account' comp={() => <AccountPage />} />
 
                     <Route render={() => <NotFoundPage />} />

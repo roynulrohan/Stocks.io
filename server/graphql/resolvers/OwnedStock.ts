@@ -9,7 +9,7 @@ async function clearFirstTransaction(userId) {
     try {
         const countTransactions = await Transaction.find({ userId }).countDocuments();
         if (countTransactions > 20) {
-            await Transaction.findOneAndDelete({ userId: userId }, { sort: { ['date']: 1 } });
+            await Transaction.findOneAndDelete({ userId }, { sort: { ['date']: 1 } });
         }
     } catch (error) {
         return { error: 'Failure to cleanup transaction logs!' };

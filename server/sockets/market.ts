@@ -5,7 +5,7 @@ export const updateStockPrices = async (io?: any) => {
     const stocks: any = await Stock.find({});
 
     for (let index = 0; index < stocks?.length; index++) {
-        const fluctuationRange = Math.floor(Math.random() * 35);
+        const fluctuationRange = Math.floor(Math.random() * 5);
         const up = Math.round(Math.random());
         const sendDelay = Math.random() * (5000 - 1500) + 1500;
         let price: number = stocks[index]?.price;
@@ -25,7 +25,7 @@ export const updateStockPrices = async (io?: any) => {
         await Stock.findOneAndUpdate({ ticker: stocks[index]?.ticker }, { price: parseFloat(price.toFixed(2)) }).then(async () => {
             updatedStocks.push({ ticker: stocks[index]?.ticker, price: parseFloat(price.toFixed(2)) });
 
-            await socketEmit(io, sendDelay, stocks[index]?.ticker, {
+            socketEmit(io, sendDelay, stocks[index]?.ticker, {
                 price: parseFloat(price.toFixed(2)),
             });
         });

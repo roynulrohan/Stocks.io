@@ -35,12 +35,18 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
     }, [currentPrice, shares]);
 
     const holdIncrementShares = () => {
-        incrementTimer.current = setInterval(() => setShares((prev) => prev + 1), 50);
+        incrementTimer.current = setInterval(() => setShares((prev) => prev + 1), 150);
     };
 
     const holdDecrementShares = () => {
         if (shares !== 0) {
-            incrementTimer.current = setInterval(() => setShares((prev) => prev - 1), 50);
+            incrementTimer.current = setInterval(
+                () =>
+                    setShares((prev) => {
+                        return prev > 0 ? prev - 1 : prev;
+                    }),
+                50
+            );
         }
     };
 
@@ -161,10 +167,10 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                     <label className='flex relative items-center select-none'>
                                         <span className='text-sm font-medium text-gray-900 dark:text-gray-200 mr-3'>Shares </span>
 
-                                        <div className='relative w-2/4 flex items-center'>
+                                        <div className='relative w-2/4 flex items-center select-none'>
                                             <span
                                                 onClick={() => {
-                                                    if (shares !== 0) {
+                                                    if (shares < 0) {
                                                         setShares((shares) => shares - 1);
                                                     }
                                                 }}
@@ -180,10 +186,11 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                             </span>
                                             <input
                                                 type='number'
-                                                value={shares}
+                                                value={shares.toString()}
                                                 onChange={(e) => {
                                                     if (e.target.value) {
-                                                        setShares(parseInt(e.target.value));
+                                                        const parsed = parseInt(e.target.value, 10);
+                                                        setShares(parsed);
                                                     } else {
                                                         setShares(0);
                                                     }
@@ -230,6 +237,11 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                 minimumFractionDigits: 2,
                                             }).format(total)}
                                         </span>
+                                        {sharesOwned && isSelling && (
+                                            <span onClick={() => {setShares(sharesOwned)}} className='text-sm rounded-2xl px-5 p-2 cursor-pointer text-gray-900 bg-orange-200 hover:bg-orange-300 dark:bg-orange-600 hover:dark:bg-orange-700 dark:text-gray-200 ml-3'>
+                                                Max
+                                            </span>
+                                        )}
                                     </label>
                                 </div>
                                 <div>
