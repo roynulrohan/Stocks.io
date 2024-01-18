@@ -1,3 +1,5 @@
+import { OwnedStock } from "./__generated__/graphql";
+
 interface Stock {
     ticker: string;
     name: string;
@@ -39,7 +41,7 @@ interface AuthState {
 }
 
 interface OwnedStocksReducer {
-    ownedStocks: any;
+    ownedStocks: OwnedStock[];
 }
 
 interface OwnedStocksState {

@@ -1,71 +1,87 @@
-import express from 'express';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { json } from 'body-parser';
 import cors from 'cors';
-import { ApolloServer } from 'apollo-server-express';
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import path from 'path';
+import express from 'express';
+import mongoose from 'mongoose';
 import { Server } from 'socket.io';
-import { updateStockPrices, startUpdatingStocks } from './sockets/market';
 import schema from './graphql/schema';
+import { startUpdatingStocks, updateStockPrices } from './sockets/market';
 
 dotenv.config();
 
+interface MyContext {
+    token?: String;
+}
+
 const app = express();
-const server = new ApolloServer({
-    schema,
-    context: ({ req }) => {
-        return {
-            req,
-        };
-    },
-});
 
-app.use(express.static(path.join(__dirname, '../client/build')));
-
+app.use(express.json({}));
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-app.get('*', (req, res) => {
-    console.log(req.protocol + '://' + req.get('host') + req.originalUrl);
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+app.use(cors({ origin: true, credentials: true }));
 
-server.start().then(() => server.applyMiddleware({ app }));
+interface MyContext {
+    token?: String;
+}
 
-const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.oisbb.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
+const server = new ApolloServer<MyContext>({ schema });
 
-mongoose
-    .connect(uri)
-    .catch((error) => {
-        throw error;
-    })
-    .then(() => {
-        console.log('Mongo connection established');
-        startUpdatingStocks(undefined, 120000);
-        console.log('Started updating all stocks without socket emits');
+const init = async () => {
+    await server.start();
+
+    app.use(
+        '/graphql',
+        cors<cors.CorsRequest>(),
+        json(),
+        expressMiddleware(server, {
+            context: async ({ req }) => ({ token: req.headers.authorization }),
+        })
+    );
+
+    app.get('/health', (req, res) => {
+        res.status(200).send('Okay!');
     });
 
-const port = process.env.PORT || 443;
+    const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.oisbb.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
-const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}${server.graphqlPath}`));
-const io = new Server(http);
+    mongoose
+        .connect(uri)
+        .catch((error) => {
+            throw error;
+        })
+        .then(() => {
+            console.log('Mongo connection established');
+            startUpdatingStocks(undefined, 120000);
+            console.log('Started updating all stocks without socket emits');
+        });
 
-let refreshIntervalId = null;
+    const port = process.env.PORT || 443;
 
-io.on('connection', async (socket) => {
-    console.log('New socket connection: ', socket?.id);
+    const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}/graphql`));
 
-    if (!refreshIntervalId) {
-        console.log('Started 10 second interval for updating stocks');
-        refreshIntervalId = setInterval(() => {
-            updateStockPrices(io);
-        }, 10000);
-    }
+    const io = new Server(http);
 
-    socket.on('disconnect', () => {
-        if (io.engine.clientsCount === 0 && refreshIntervalId) {
-            clearInterval(refreshIntervalId);
-            refreshIntervalId = null;
-            console.log('No users connected, stopped 10 second interval for stocks');
+    let refreshIntervalId = null;
+
+    io.on('connection', async (socket) => {
+        console.log('New socket connection: ', socket?.id);
+
+        if (!refreshIntervalId) {
+            console.log('Started 10 second interval for updating stocks');
+            refreshIntervalId = setInterval(() => {
+                updateStockPrices(io);
+            }, 10000);
         }
+
+        socket.on('disconnect', () => {
+            if (io.engine.clientsCount === 0 && refreshIntervalId) {
+                clearInterval(refreshIntervalId);
+                refreshIntervalId = null;
+                console.log('No users connected, stopped 10 second interval for stocks');
+            }
+        });
     });
-});
+};
+
+init();

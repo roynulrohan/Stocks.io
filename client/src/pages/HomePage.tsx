@@ -1,12 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-
 import StockCard from '../components/StockCard';
 import { GET_STOCKS } from '../graphql';
 import { useQuery } from '@apollo/client';
-//@ts-ignore
 import financialDataSVG from '../assets/svgs/financial_data.svg';
-//@ts-ignore
 import programmingSVG from '../assets/svgs/programming.svg';
 
 const HomePage = () => {
@@ -51,7 +48,7 @@ const HomePage = () => {
             <section className='text-gray-600 body-font w-full flex flex-col justify-center'>
                 <h1 className='title-font text-center sm:text-2xl text-xl font-medium text-gray-900 dark:text-white'>Today's Featured Picks</h1>
                 <div className='dark:bg-darkBg flex md:justify-center my-7 px-2 pb-4 overflow-x-scroll sm:overflow-hidden w-screen'>
-                    {data?.getStocks?.stocks.map((stock: any) => {
+                    {data?.searchStocks.map((stock: any) => {
                         return <StockCard key={stock.ticker} stock={stock} />;
 
                         //return <div key={stock.ticker}>{JSON.stringify(stock)}</div>;

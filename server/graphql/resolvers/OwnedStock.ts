@@ -2,8 +2,8 @@ import { OwnedStock } from '../../models/OwnedStock';
 import { Transaction } from '../../models/Transaction';
 import { User } from '../../models/User';
 import { verifyToken } from '../../middleware/auth';
-import { AuthenticationError, ApolloError } from 'apollo-server-express';
 import { Stock } from '../../models/Stock';
+import { GraphQLError } from 'graphql';
 
 async function clearFirstTransaction(userId) {
     try {
@@ -18,55 +18,68 @@ async function clearFirstTransaction(userId) {
 
 export const OwnedStockResolver = {
     Query: {
-        getOwnedStocks: async (_, args, context) => {
-            const token = context.req.headers.authorization;
+        ownedStocks: async (_, args, context) => {
+            const { token } = context;
+            console.log(token);
 
-            const result = verifyToken({ token: token.split(' ')[1] });
+            const result = await verifyToken(token);
 
             if (result.error) {
-                throw new AuthenticationError(result.error);
+                throw new GraphQLError(result.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
             const ownedStocks = await OwnedStock.find({ userId: result.userId }).sort({ ['userId']: 1 });
 
-            const object = Object.fromEntries(ownedStocks.map((stock: any) => [stock.ticker, stock]));
-
-            return { ownedStocks: object };
+            return ownedStocks;
         },
-        getOwnedStock: async (_, { ticker }, context) => {
-            const token = context.req.headers.authorization;
+        ownedStock: async (_, { ticker }, context) => {
+            const { token } = context;
 
-            const result = verifyToken({ token: token.split(' ')[1] });
+            const result = await verifyToken(token);
 
             if (result.error) {
-                throw new AuthenticationError(result.error);
+                throw new GraphQLError(result.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
             const ownedStock = await OwnedStock.find({ userId: result.userId, ticker });
 
-            return { ownedStock };
+            return ownedStock;
         },
     },
     Mutation: {
         buyStock: async (_, { ticker, shares }, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const authResult = verifyToken({ token: token.split(' ')[1] });
+            const authResult = await verifyToken(token);
 
             if (authResult.error) {
-                throw new AuthenticationError(authResult.error);
+                throw new GraphQLError(authResult.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const stock: any = await Stock.findOne({ ticker });
-            const user: any = await User.findOne({ _id: authResult.userId });
+            const stock = await Stock.findOne({ ticker });
+            const user = await User.findOne({ _id: authResult.userId });
             const alreadyOwned = (await OwnedStock.find({ userId: authResult.userId, ticker }).countDocuments()) > 0;
             const cost = shares * stock.price;
 
             if (cost > user.balance) {
-                throw new ApolloError("Can't afford transaction. $" + (cost - user.balance).toFixed(2) + ' more required.');
+                throw new GraphQLError("Can't afford transaction. $" + (cost - user.balance).toFixed(2) + ' more required.', {
+                    extensions: {
+                        code: 'INSUFFICIENT_FUNDS',
+                    },
+                });
             }
-
-            let response;
 
             if (alreadyOwned) {
                 const ownedStock = await OwnedStock.findOneAndUpdate(
@@ -80,7 +93,8 @@ export const OwnedStockResolver = {
                 const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
                 await newTransaction.save();
 
-                response = { ownedStock, price: stock.price, newBalance: user.balance - cost };
+                clearFirstTransaction(authResult.userId);
+                return { ownedStock, price: stock.price, newBalance: user.balance - cost };
             } else {
                 const newOwnedStock = new OwnedStock({
                     userId: authResult.userId,
@@ -95,65 +109,70 @@ export const OwnedStockResolver = {
                 const newTransaction = new Transaction({ userId: authResult.userId, type: 'BUY', ticker, shares, totalAmount: cost, stockPrice: stock.price });
                 await newTransaction.save();
 
-                response = { ownedStock: result, newBalance: user.balance - cost };
+                clearFirstTransaction(authResult.userId);
+                return { ownedStock: result, newBalance: user.balance - cost };
             }
-
-            clearFirstTransaction(authResult.userId);
-
-            return response;
         },
         sellStock: async (_, { ticker, shares }, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const authResult = verifyToken({ token: token.split(' ')[1] });
+            const authResult = await verifyToken(token);
 
             if (authResult.error) {
-                throw new AuthenticationError(authResult.error);
-            }
-
-            const ownedStock: any = await OwnedStock.findOne({ userId: authResult.userId, ticker });
-
-            let response;
-
-            if (ownedStock) {
-                if (ownedStock.shares < shares) {
-                    throw new ApolloError('Invalid shares amount');
-                }
-
-                const stock: any = await Stock.findOne({ ticker });
-                const profit = stock.price * shares;
-                const initialInvestment = ownedStock.initialInvestment - (ownedStock.initialInvestment * shares) / ownedStock.shares;
-
-                const result: any = await OwnedStock.findOneAndUpdate(
-                    { userId: authResult.userId, ticker },
-                    { $inc: { shares: -shares }, initialInvestment },
-                    { new: true }
-                );
-
-                const newTransaction = new Transaction({
-                    userId: authResult.userId,
-                    type: 'SELL',
-                    ticker,
-                    shares,
-                    totalAmount: profit,
-                    stockPrice: stock.price,
+                throw new GraphQLError(authResult.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
                 });
-                await newTransaction.save();
-
-                if (result.shares === 0) {
-                    await OwnedStock.findOneAndDelete({ userId: authResult.userId, ticker });
-                }
-
-                const user: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: profit } }, { new: true });
-
-                response = { ownedStock: result, newBalance: user.balance };
-            } else {
-                throw new ApolloError('Stock not owned');
             }
+
+            const ownedStock = await OwnedStock.findOne({ userId: authResult.userId, ticker });
+
+            if (!ownedStock) {
+                throw new GraphQLError('Stock not owned', {
+                    extensions: {
+                        code: 'BAD_REQUEST',
+                    },
+                });
+            }
+
+            if (ownedStock.shares < shares) {
+                throw new GraphQLError('Invalid shares', {
+                    extensions: {
+                        code: 'INVALID_SHARES',
+                    },
+                });
+            }
+
+            const stock = await Stock.findOne({ ticker });
+            const profit = stock.price * shares;
+            const initialInvestment = ownedStock.initialInvestment - (ownedStock.initialInvestment * shares) / ownedStock.shares;
+
+            const result = await OwnedStock.findOneAndUpdate(
+                { userId: authResult.userId, ticker },
+                { $inc: { shares: -shares }, initialInvestment },
+                { new: true }
+            );
+
+            const newTransaction = new Transaction({
+                userId: authResult.userId,
+                type: 'SELL',
+                ticker,
+                shares,
+                totalAmount: profit,
+                stockPrice: stock.price,
+            });
+            await newTransaction.save();
+
+            if (result.shares === 0) {
+                await OwnedStock.findOneAndDelete({ userId: authResult.userId, ticker });
+            }
+
+            const user = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: profit } }, { new: true });
 
             clearFirstTransaction(authResult.userId);
 
-            return response;
+            return { ownedStock: result, newBalance: user.balance };
         },
     },
 };

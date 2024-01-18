@@ -1,13 +1,12 @@
 import { Fragment, useEffect, useState } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import ToggleDarkMode from './ToggleDarkMode';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
-import { LOGOUT } from '../constants/actions';
+import { LOGOUT } from '../redux/actions';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Disclosure, Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon, ChevronUpIcon, MenuIcon, XIcon } from '@heroicons/react/outline';
-// @ts-ignore
 import RocketLaunchIcon from '../assets/icons/rocket-launch.png';
 
 const navigation = [
@@ -22,7 +21,7 @@ function classNames(...classes: any) {
 export default function NavBar() {
     const auth = useSelector((state: AuthState) => state.authReducer.authData);
     const location = useLocation();
-    const history = useHistory();
+    const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -35,7 +34,7 @@ export default function NavBar() {
     }, [auth]);
 
     const handleLogin = () => {
-        history.push({ pathname: '/auth', state: { redirect: location.pathname } });
+        navigate('/auth', { state: { redirect: location.pathname } });
     };
 
     const handleSignOut = () => {

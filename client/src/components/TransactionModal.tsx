@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BUY_STOCK, SELL_STOCK } from '../graphql';
 import { useDispatch } from 'react-redux';
-import { UPDATE_BALANCE, UPDATE_STOCK } from '../constants/actions';
+import { UPDATE_BALANCE, UPDATE_STOCK } from '../redux/actions';
 import { Switch } from '@headlessui/react';
 import { useMutation } from '@apollo/client';
-// @ts-ignore
 import checkIcon from '../assets/icons/checked.png';
 
 interface Props {
@@ -80,6 +79,10 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     minimumFractionDigits: 2,
                 }).format(total)
         );
+
+        setTimeout(() => {
+            closeModal();
+        }, 3000);
     };
 
     const handleSubmit = () => {
@@ -92,8 +95,8 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.sellStock } });
-                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.sellStock.newBalance } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.sellStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.sellStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -107,8 +110,8 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.buyStock } });
-                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.buyStock.newBalance } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.buyStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.buyStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -238,7 +241,11 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                             }).format(total)}
                                         </span>
                                         {sharesOwned && isSelling && (
-                                            <span onClick={() => {setShares(sharesOwned)}} className='text-sm rounded-2xl px-5 p-2 cursor-pointer text-gray-900 bg-orange-200 hover:bg-orange-300 dark:bg-orange-600 hover:dark:bg-orange-700 dark:text-gray-200 ml-3'>
+                                            <span
+                                                onClick={() => {
+                                                    setShares(sharesOwned);
+                                                }}
+                                                className='text-sm rounded-2xl px-5 p-2 cursor-pointer text-gray-900 bg-orange-200 hover:bg-orange-300 dark:bg-orange-600 hover:dark:bg-orange-700 dark:text-gray-200 ml-3'>
                                                 Max
                                             </span>
                                         )}
@@ -250,7 +257,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                         <Switch checked={isSelling} onChange={() => {}}>
                                             <span
                                                 className='rounded-2xl h-8 w-20 flex justify-center dark:bg-darkCard bg-gray-100 cursor-pointer'
-                                                onClick={(e) => {
+                                                onClick={() => {
                                                     setIsSelling((prev) => !prev);
                                                 }}>
                                                 <span

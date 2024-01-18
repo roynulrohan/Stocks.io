@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PriceChart from '../components/PriceChart';
 import PriceChange from '../components/PriceChange';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Stock, StockUpdate } from '../types';
 import { motion } from 'framer-motion';
-import { useSocket } from '../contexts/SocketProvider';
+import { useSocket } from '../contexts/useSocket';
 
 interface Props {
     stock: Stock;
 }
 
 const StockCard = React.memo(({ stock }: Props) => {
-    const socket: any = useSocket();
-    const history = useHistory();
+    const socket = useSocket();
+    const navigate = useNavigate();
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
     const prevPrice = useRef(stock?.price);
 
@@ -35,7 +35,7 @@ const StockCard = React.memo(({ stock }: Props) => {
     }, [currentPrice]);
 
     const cardOnClick = () => {
-        history.push('/stock/' + stock?.ticker);
+        navigate('/stock/' + stock?.ticker);
     };
 
     return (

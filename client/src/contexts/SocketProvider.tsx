@@ -1,19 +1,15 @@
-import React, { useContext } from 'react';
-import { io } from 'socket.io-client';
+import React, { ReactNode } from 'react';
+import { Socket, io } from 'socket.io-client';
 
-const SocketContext = React.createContext(null);
-
-export function useSocket() {
-    return useContext(SocketContext);
-}
+export const SocketContext = React.createContext<Socket | null>(null);
 
 interface Params {
-    children: Object;
+    children: ReactNode;
 }
 
 export function SocketProvider({ children }: Params) {
-    console.log(process.env.REACT_APP_API_URI, window.location.origin);
-    const socket: any = io(process.env.REACT_APP_API_URI || window.location.origin, {
+    console.log(import.meta.env.VITE_API_URI, window.location.origin);
+    const socket: Socket = io(import.meta.env.VITE_API_URI || window.location.origin, {
         timeout: 10001,
         transports: ['websocket'],
     });

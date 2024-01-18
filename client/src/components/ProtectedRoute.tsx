@@ -1,26 +1,18 @@
-import React, { useState } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 
-const ProtectedRoute = ({ comp: Component, ...rest }: any) => {
+interface ProtectedRouteProps {
+    children: React.ReactNode;
+}
+
+const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const [profile] = useState(JSON.parse(localStorage.getItem('profile') || '{}'));
 
-    return (
-        <Route
-            {...rest}
-            render={({ props, location }: any) => {
-                return profile?.user ? (
-                    <Component {...props} {...rest} />
-                ) : (
-                    <Redirect
-                        to={{
-                            pathname: '/auth',
-                            state: { redirect: location },
-                        }}
-                    />
-                );
-            }}
-        />
-    );
+    if (!profile.user) {
+        return <Navigate to='/landing' replace />;
+    }
+
+    return children;
 };
 
 export default ProtectedRoute;

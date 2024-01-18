@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState, OwnedStocksState } from '../types';
 import { GET_TRANSACTIONS, DEPOSIT, WITHDRAW, CHANGE_USERNAME } from '../graphql';
-import { UPDATE_BALANCE, UPDATE_USERNAME } from '../constants/actions';
+import { UPDATE_BALANCE, UPDATE_USERNAME } from '../redux/actions';
 import { Tab } from '@headlessui/react';
 import { useQuery, useMutation } from '@apollo/client';
 import StockCard from '../components/StockCard';

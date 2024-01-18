@@ -2,9 +2,7 @@ import { Stock } from '../../models/Stock';
 
 export const StockResolver = {
     Query: {
-        getStocks: async (_, args) => {
-            const { search = null, limit, random } = args;
-
+        searchStocks: async (_, { search = null, limit, random }) => {
             let searchQuery = {};
 
             // run if search is provided
@@ -24,20 +22,17 @@ export const StockResolver = {
                     .sort({ ['name']: 1 })
                     .limit(limit);
 
-                return { stocks };
+                return stocks;
             } else {
                 const stocks = await Stock.aggregate([{ $match: searchQuery }, { $sample: { size: limit } }]).sort({ ['name']: 1 });
 
-                return { stocks };
+                return stocks;
             }
         },
-        getStock: async (_, args) => {
-            const { ticker = null } = args;
-
-            // execute query to search users
+        stock: async (_, { ticker }) => {
             const stock = await Stock.findOne({ ticker });
 
-            return { stock };
+            return stock;
         },
     },
 };

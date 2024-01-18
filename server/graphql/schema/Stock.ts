@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-express';
-
-export const StockTypeDef = gql`
+export const StockTypeDef = `#graphql
     type Stock {
         ticker: String!
         name: String!
@@ -13,16 +11,9 @@ export const StockTypeDef = gql`
         currency: String!
         weburl: String!
     }
-    type stocks {
-        stocks: [Stock]
-    }
-
-    type stock {
-        stock: Stock
-    }
 
     type Query {
-        getStocks(search: String, limit: Int, random: Boolean): stocks
-        getStock(ticker: String): stock
+        searchStocks(search: String, limit: Int, random: Boolean): [Stock]!
+        stock(ticker: String): Stock!
     }
 `;

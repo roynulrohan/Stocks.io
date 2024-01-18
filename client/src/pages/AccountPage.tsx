@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
 import { GET_TRANSACTIONS, DEPOSIT, WITHDRAW, CHANGE_USERNAME } from '../graphql';
-import { UPDATE_BALANCE, UPDATE_USERNAME } from '../constants/actions';
+import { UPDATE_BALANCE, UPDATE_USERNAME } from '../redux/actions';
 import { Tab } from '@headlessui/react';
 import { useQuery, useMutation } from '@apollo/client';
 
@@ -64,7 +64,7 @@ const AccountPage = () => {
                 .then(({ data }) => {
                     setTimeout(() => {
                         setErrors('');
-                        dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.withdraw.newBalance } });
+                        dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.withdraw?.newBalance } });
                         setIsLoadingWithdraw(false);
                         setTransferAmount(0);
                     }, 1500);
@@ -403,8 +403,8 @@ const AccountPage = () => {
                                             <div className='text-xs overflow-auto h-panel w-full'>
                                                 <h2 className='text-left text-lg font-semibold text-gray-700 capitalize dark:text-gray-200 mb-2 px-3 pt-2'>
                                                     Transactions
-                                                    {transactions?.getTransactions?.transactions &&
-                                                        ' - ' + transactions?.getTransactions?.transactions.length + ' latest records'}
+                                                    {transactions?.transactions &&
+                                                        ' - ' + transactions?.transactions.length + ' latest records'}
                                                 </h2>
                                                 <div className='shadow rounded-lg relative'>
                                                     <table className='leading-normal w-full h-full absolute overflow-hidden'>
@@ -439,7 +439,7 @@ const AccountPage = () => {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {transactions?.getTransactions?.transactions.map((transaction: any) => (
+                                                            {transactions?.transactions.map((transaction: any) => (
                                                                 <tr
                                                                     key={transaction._id}
                                                                     className='bg-white dark:bg-darkCard hover:bg-gray-100 dark:hover:bg-gray-600'>

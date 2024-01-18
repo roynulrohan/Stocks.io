@@ -67,7 +67,7 @@ const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, sty
     };
 
     return (
-        <p className={'text-gray-900 rounded-full px-2 py-1 ' + styleset + (isGain ? ' bg-green-300' : ' bg-red-400')}>
+        <p className={'text-gray-900 rounded-full h-fit px-2 py-1 whitespace-nowrap ' + styleset + (isGain ? ' bg-green-300' : ' bg-red-400')}>
             <span className='font-semibold'>
                 {currencySymbol}
                 {currentPrice.toFixed(2)}

@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory, useLocation } from 'react-router-dom';
-import { AUTH, OWNED_STOCKS } from '../constants/actions';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { AUTH, OWNED_STOCKS } from '../redux/actions';
 import { LOGIN_USER, REGISTER_USER, GET_OWNEDSTOCKS } from '../graphql';
 import { AuthState } from '../types';
 import { useMutation, useLazyQuery } from '@apollo/client';
-// @ts-ignore
 import CheckedIcon from '../assets/icons/checked.png';
 
 const initialState = { username: '', password: '', confirmPassword: '' };
-
-interface LocationState {
-    redirect: {
-        pathname: string;
-    };
-}
 
 const Auth = () => {
     const [getOwnedStocks, { data: ownedStocksData }] = useLazyQuery(GET_OWNEDSTOCKS);
@@ -24,23 +17,18 @@ const Auth = () => {
     const [errors, setErrors] = useState('');
     const [form, setForm] = useState(initialState);
     const [isLoading, setIsLoading] = useState(false);
-    const [isLoadingGuest, setIsLoadingGuest] = useState(false);
     const [isSignup, setIsSignup] = useState(false);
     const dispatch = useDispatch();
-    const history = useHistory();
-    const location = useLocation<LocationState>();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         document.title = 'Authorization | Stocks.io';
     }, []);
 
-    const switchMode = (e: any) => {
+    const switchMode = () => {
         setIsLoading(false);
         setIsSignup((prevIsSignup) => !prevIsSignup);
-    };
-
-    const handleSubmitGuestAccount = (e: any) => {
-        e.preventDefault();
     };
 
     const handleSubmit = (e: any) => {
@@ -53,7 +41,7 @@ const Auth = () => {
                     setErrors('');
                     dispatch({ type: AUTH, payload: data?.registerUser });
                     dispatch({ type: OWNED_STOCKS, payload: {} });
-                    history.push(location?.state?.redirect || '/market');
+                    navigate(location?.state?.redirect || '/market');
                 })
                 .catch((err) => {
                     setErrors(err?.message);

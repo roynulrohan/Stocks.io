@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-express';
-
-export const UserTypeDef = gql`
+export const UserTypeDef = `#graphql
     type User {
         _id: String!
         username: String!
@@ -17,7 +15,7 @@ export const UserTypeDef = gql`
     }
 
     type balanceResponse {
-        newBalance: Float
+        newBalance: Float!
     }
 
     type usernameChangeResponse {
@@ -25,10 +23,10 @@ export const UserTypeDef = gql`
     }
 
     type Mutation {
-        registerUser(username: String!, password: String!, confirmPassword: String!): UserResponse
-        loginUser(username: String!, password: String!): UserResponse
-        deposit(amount: Float!): balanceResponse
-        withdraw(amount: Float!): balanceResponse
-        changeUsername(newUsername: String!, confirmPassword: String!): usernameChangeResponse
+        registerUser(username: String!, password: String!, confirmPassword: String!): UserResponse!
+        loginUser(username: String!, password: String!): UserResponse!
+        deposit(amount: Float!): balanceResponse!
+        withdraw(amount: Float!): balanceResponse!
+        changeUsername(newUsername: String!, confirmPassword: String!): usernameChangeResponse!
     }
 `;

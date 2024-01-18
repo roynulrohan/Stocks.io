@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import './scss/style.scss';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useLazyQuery } from '@apollo/client';
 import { VERIFY_USER, GET_OWNEDSTOCKS } from './graphql';
 import { useDispatch } from 'react-redux';
-import { AUTH, OWNED_STOCKS } from './constants/actions';
+import { AUTH, OWNED_STOCKS } from './redux/actions';
 
 import NotFoundPage from './pages/NotFoundPage';
 import MarketPage from './pages/MarketPage';
@@ -41,7 +40,7 @@ function App() {
 
     useEffect(() => {
         if (ownedStocksData && !ownedStockLoading) {
-            dispatch({ type: OWNED_STOCKS, payload: ownedStocksData?.getOwnedStocks?.ownedStocks });
+            dispatch({ type: OWNED_STOCKS, payload: ownedStocksData.ownedStocks });
         }
     }, [ownedStocksData, ownedStockLoading, dispatch]);
 
@@ -49,20 +48,25 @@ function App() {
         <AnimatePresence>
             <ScrollToTop>
                 <Navbar />
-                <Switch location={location} key={location.pathname}>
-                    <Route exact path='/' render={() => <HomePage />} />
-                    <Route exact path='/market' render={() => <MarketPage />} />
-                    <Route exact path='/auth' render={() => <AuthPage />} />
+                <Routes location={location} key={location.pathname}>
+                    <Route path='/' element={<HomePage />} />
+                    <Route path='/market' element={<MarketPage />} />
+                    <Route path='/auth' element={<AuthPage />} />
 
-                    <Route exact path='/stock/:ticker'>
-                        <StockPage ticker={useLocation().pathname.replace('/stock/', '')} />
-                    </Route>
+                    <Route path='/stock/:ticker' element={<StockPage ticker={useLocation().pathname.replace('/stock/', '')} />} />
 
-                    <Route exact path='/portfolio' render={() => <PortfolioPage />} />
-                    <ProtectedRoute exact path='/account' comp={() => <AccountPage />} />
+                    <Route path='/portfolio' element={<PortfolioPage />} />
+                    <Route
+                        path='/account'
+                        element={
+                            <ProtectedRoute>
+                                <AccountPage />
+                            </ProtectedRoute>
+                        }
+                    />
 
-                    <Route render={() => <NotFoundPage />} />
-                </Switch>
+                    <Route element={<NotFoundPage />} />
+                </Routes>
                 <Footer />
             </ScrollToTop>
         </AnimatePresence>
