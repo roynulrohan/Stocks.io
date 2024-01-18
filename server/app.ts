@@ -7,7 +7,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 import schema from './graphql/schema';
-import { startUpdatingStocks, updateStockPrices } from './sockets/market';
+import { stopUpdatingStockPrices, updateStockPrices } from './sockets/market';
 
 dotenv.config();
 
@@ -52,8 +52,7 @@ const init = async () => {
         })
         .then(() => {
             console.log('Mongo connection established');
-            startUpdatingStocks(undefined, 120000);
-            console.log('Started updating all stocks without socket emits');
+            updateStockPrices(1, 120000, undefined);
         });
 
     const port = process.env.PORT || 443;
@@ -62,22 +61,14 @@ const init = async () => {
 
     const io = new Server(http);
 
-    let refreshIntervalId = null;
-
     io.on('connection', async (socket) => {
         console.log('New socket connection: ', socket?.id);
 
-        if (!refreshIntervalId) {
-            console.log('Started 10 second interval for updating stocks');
-            refreshIntervalId = setInterval(() => {
-                updateStockPrices(io);
-            }, 10000);
-        }
+        updateStockPrices(2, 10000, io);
 
         socket.on('disconnect', () => {
-            if (io.engine.clientsCount === 0 && refreshIntervalId) {
-                clearInterval(refreshIntervalId);
-                refreshIntervalId = null;
+            if (io.engine.clientsCount === 0) {
+                stopUpdatingStockPrices(2);
                 console.log('No users connected, stopped 10 second interval for stocks');
             }
         });

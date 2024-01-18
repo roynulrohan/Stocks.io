@@ -95,7 +95,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.sellStock } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.sellStock.ownedStock } });
                             dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.sellStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
@@ -110,7 +110,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.buyStock } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.buyStock.ownedStock } });
                             dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.buyStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();

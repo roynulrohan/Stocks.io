@@ -1,16 +1,20 @@
+import { Stock } from '../../__generated__/graphql';
 import { OWNED_STOCKS, UPDATE_STOCK } from '../actions';
 
 const ownedStocksReducer = (state = { ownedStocks: [] }, action: any) => {
-    const stocks: any = JSON.parse(JSON.stringify(state.ownedStocks));
+    const stocks: Stock[] = JSON.parse(JSON.stringify(state.ownedStocks));
 
     switch (action.type) {
         case OWNED_STOCKS:
             return { ...state, ownedStocks: action?.payload };
         case UPDATE_STOCK:
-            if (action?.payload?.stock?.ownedStock.shares === 0) {
-                delete stocks[action?.payload?.ticker];
+            if (action?.payload?.stock?.shares === 0) {
+                stocks.splice(
+                    stocks.findIndex((stock) => stock.ticker === action?.payload?.ticker),
+                    1
+                );
             } else {
-                stocks[action?.payload?.ticker] = action?.payload?.stock?.ownedStock;
+                stocks.push(action?.payload?.stock);
             }
             return { ...state, ownedStocks: stocks };
         default:
