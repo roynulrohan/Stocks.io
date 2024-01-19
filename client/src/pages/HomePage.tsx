@@ -24,7 +24,11 @@ const HomePage = () => {
                                 A dummy stock trading platform
                             </p>
                             <p className='mb-8 sm:text-sm lg:text-lg leading-relaxed dark:text-gray-300'>
-                                Start trading now with imaginary currency too see how you perform in the markets. All prices are randomly generated and no real money is involved.
+                                Built as a portfolio project. Not meant to be a real application. <br />
+                                Stock price fluctuations are randomly generated but real data is fetched peridoically.
+                                <br />
+                                <br />
+                                <span className='font-bold'>No real money is involved.</span>
                             </p>
                             <div className='flex justify-center flex-nowrap'>
                                 <Link
@@ -61,8 +65,8 @@ const HomePage = () => {
                         <h1 className='title-font sm:text-3xl text-3xl mb-4 font-medium text-gray-900 dark:text-white'>What is Stocks.io?</h1>
 
                         <p className='mb-8 text-md lg:text-lg leading-relaxed dark:text-gray-300'>
-                            Stocks.io is a full-stack portfolio project. The technologies used were the MERN stack, along with TypeScript, TailwindCSS,
-                            SASS, Redux, Socket.io, JWT, and Apollo GraphQL.
+                            Stocks.io is a full-stack portfolio project. The technologies used were the MERN stack, along with TypeScript, TailwindCSS, SASS,
+                            Redux, Socket.io, JWT, and Apollo GraphQL.
                         </p>
                         <div className='flex justify-center flex-nowrap'>
                             <a

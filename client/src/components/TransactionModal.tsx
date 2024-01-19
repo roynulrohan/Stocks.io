@@ -79,10 +79,6 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     minimumFractionDigits: 2,
                 }).format(total)
         );
-
-        setTimeout(() => {
-            closeModal();
-        }, 3000);
     };
 
     const handleSubmit = () => {

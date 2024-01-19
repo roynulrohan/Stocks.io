@@ -88,7 +88,7 @@ export type Query = {
   ownedStocks: Array<Maybe<OwnedStock>>;
   searchStocks: Array<Maybe<Stock>>;
   stock: Stock;
-  transactions: Array<Maybe<Transaction>>;
+  transactions: Array<Transaction>;
 };
 
 
@@ -203,7 +203,7 @@ export type GetUserQuery = { __typename?: 'Query', getUser: { __typename?: 'User
 export type GetTransactionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', userId: string, type: string, ticker: string, shares: number, totalAmount: number, stockPrice: number, date: any } | null> };
+export type GetTransactionsQuery = { __typename?: 'Query', transactions: Array<{ __typename?: 'Transaction', userId: string, type: string, ticker: string, shares: number, totalAmount: number, stockPrice: number, date: any }> };
 
 export type DepositMutationVariables = Exact<{
   amount: Scalars['Float']['input'];

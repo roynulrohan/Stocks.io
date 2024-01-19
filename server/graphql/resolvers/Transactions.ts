@@ -19,7 +19,7 @@ export const TransactionResolver = {
 
             const transactions = await Transaction.find({ userId: result.userId }).sort({ ['date']: -1 });
 
-            if (transactions.length > 20) {
+            if (transactions.length > 50) {
                 await Transaction.findOneAndDelete({ userId: result.userId }, { sort: { ['date']: 1 } });
             }
 

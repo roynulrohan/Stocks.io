@@ -8,7 +8,7 @@ import { GraphQLError } from 'graphql';
 async function clearFirstTransaction(userId) {
     try {
         const countTransactions = await Transaction.find({ userId }).countDocuments();
-        if (countTransactions > 20) {
+        if (countTransactions > 50) {
             await Transaction.findOneAndDelete({ userId }, { sort: { ['date']: 1 } });
         }
     } catch (error) {

@@ -12,6 +12,6 @@ export const TransactionTypeDef = `#graphql
     }
     
     type Query {
-        transactions: [Transaction]!
+        transactions: [Transaction!]!
     }
 `;

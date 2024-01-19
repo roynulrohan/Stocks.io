@@ -140,8 +140,13 @@ export default function NavBar() {
                                                 <Menu.Button
                                                     className={classNames(
                                                         isAuthenticated ? 'w-10' : 'w-auto',
-                                                        'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
-                                                    )}>
+                                                        'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
+                                                    )}
+                                                    onClick={() => {
+                                                        if (!isAuthenticated) {
+                                                            handleLogin();
+                                                        }
+                                                    }}>
                                                     <span className='hidden sm:block'>{isAuthenticated ? auth?.user?.username : 'Login'}</span>
                                                     <span className='block sm:hidden'>
                                                         {isAuthenticated ? auth?.user?.username.at(0)?.toUpperCase() : 'Login'}
@@ -152,8 +157,6 @@ export default function NavBar() {
                                                         ) : (
                                                             <ChevronDownIcon className='hidden sm:block h-5' />
                                                         ))}
-
-                                                    {!isAuthenticated && <button className='absolute z- w-full h-full' onClick={handleLogin}></button>}
                                                 </Menu.Button>
 
                                                 <Transition

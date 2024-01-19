@@ -3,7 +3,7 @@ import PriceChange from '../components/PriceChange';
 import TransactionModal from '../components/TransactionModal';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Stock, OwnedStocksState, StockUpdate, AuthState } from '../types';
 import { GET_STOCK } from '../graphql';
 import { useSocket } from '../contexts/useSocket';
@@ -27,7 +27,13 @@ export default function StockPage({ ticker }: Props) {
     const stockData = useMemo<Stock | undefined>(() => stockDataRaw?.stock, [stockDataRaw]);
 
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
-    const prevPrice = useRef(-1);
+    const prevPrice = useMemo(() => {
+        if (currentPrice !== -1) {
+            return currentPrice;
+        }
+
+        return -1;
+    }, [currentPrice]);
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -45,12 +51,6 @@ export default function StockPage({ ticker }: Props) {
             socket && socket?.off(ticker);
         };
     }, [socket, ticker]);
-
-    useEffect(() => {
-        if (currentPrice !== -1) {
-            prevPrice.current = currentPrice;
-        }
-    }, [currentPrice]);
 
     const toggleModal = useCallback(() => {
         if (auth) {
@@ -210,7 +210,7 @@ export default function StockPage({ ticker }: Props) {
                         {stockData?.price && (
                             <PriceChange
                                 currentPrice={currentPrice !== -1 ? currentPrice : stockData?.price || 0}
-                                prevPrice={(prevPrice.current !== -1 ? prevPrice.current : stockData?.price) || 0}
+                                prevPrice={(prevPrice !== -1 ? prevPrice : stockData?.price) || 0}
                                 currency={stockData?.currency}
                                 ticker={ticker}
                                 styleset='text-center min-w-34 lg:text-sm text-xs px-4'

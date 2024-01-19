@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AuthState } from '../types';
 import { GET_TRANSACTIONS, DEPOSIT, WITHDRAW, CHANGE_USERNAME } from '../graphql';
 import { UPDATE_BALANCE, UPDATE_USERNAME } from '../redux/actions';
 import { Tab } from '@headlessui/react';
 import { useQuery, useMutation } from '@apollo/client';
+import { Transaction } from '../__generated__/graphql';
 
 function classNames(...classes: any) {
     return classes.filter(Boolean).join(' ');
@@ -13,7 +14,8 @@ function classNames(...classes: any) {
 const transferOptions = [500, 1000, 10000];
 
 const AccountPage = () => {
-    const { data: transactions } = useQuery(GET_TRANSACTIONS);
+    const { data: transactionsRaw } = useQuery(GET_TRANSACTIONS);
+    const transactions: Transaction[] = useMemo(() => transactionsRaw?.transactions || [], [transactionsRaw]);
     const auth = useSelector((state: AuthState) => state.authReducer.authData);
     const dispatch = useDispatch();
     const [depositMutation] = useMutation(DEPOSIT);
@@ -188,9 +190,7 @@ const AccountPage = () => {
                                                                 </div>
                                                             </div>
                                                             <div className='w-full md:w-1/3 px-3 mb-6 md:mb-0'>
-                                                                <label
-                                                                    className='text-gray-700 dark:text-gray-200'
-                                                                    htmlFor='payment-method'>
+                                                                <label className='text-gray-700 dark:text-gray-200' htmlFor='payment-method'>
                                                                     Payment Method
                                                                 </label>
                                                                 <div className='relative mt-4'>
@@ -213,9 +213,10 @@ const AccountPage = () => {
                                                         </div>
                                                         <h5 className='text-center text-sm font-light'>Enter amount or select</h5>
                                                         <div className='flex justify-center items-center space-x-1 md:space-x-5'>
-                                                            {transferOptions.map((option) => {
+                                                            {transferOptions.map((option, i) => {
                                                                 return (
                                                                     <button
+                                                                        key={i}
                                                                         onClick={() => {
                                                                             setTransferAmount(option);
                                                                         }}
@@ -344,6 +345,7 @@ const AccountPage = () => {
                                                                 onChange={(e) => {
                                                                     setConfirmPassword(e.target.value);
                                                                 }}
+                                                                autoComplete='new-password'
                                                                 placeholder='Enter your password'
                                                                 className='block w-full px-4 py-2 mt-2 text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:text-gray-300 dark:border-gray-600 focus:border-blue-500 dark:focus:border-blue-500 focus:outline-none focus:ring'
                                                             />
@@ -402,9 +404,7 @@ const AccountPage = () => {
                                         <div className='flex h-full min-w-panel'>
                                             <div className='text-xs overflow-auto h-panel w-full'>
                                                 <h2 className='text-left text-lg font-semibold text-gray-700 capitalize dark:text-gray-200 mb-2 px-3 pt-2'>
-                                                    Transactions
-                                                    {transactions?.transactions &&
-                                                        ' - ' + transactions?.transactions.length + ' latest records'}
+                                                    Transactions - {transactions && transactions.length} latest records
                                                 </h2>
                                                 <div className='shadow rounded-lg relative'>
                                                     <table className='leading-normal w-full h-full absolute overflow-hidden'>
@@ -439,51 +439,55 @@ const AccountPage = () => {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {transactions?.transactions.map((transaction: any) => (
-                                                                <tr
-                                                                    key={transaction._id}
-                                                                    className='bg-white dark:bg-darkCard hover:bg-gray-100 dark:hover:bg-gray-600'>
-                                                                    <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
-                                                                        <p className='text-gray-900 dark:text-white whitespace-no-wrap'>{transaction.type}</p>
-                                                                    </td>
-                                                                    <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
-                                                                        <p className='text-gray-900 dark:text-white whitespace-no-wrap'>{transaction.ticker}</p>
-                                                                    </td>
-                                                                    <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
-                                                                        <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
-                                                                            {transaction.shares} x &nbsp;
-                                                                            {new Intl.NumberFormat('en-US', {
-                                                                                style: 'currency',
-                                                                                currency: 'USD',
-                                                                                maximumFractionDigits: 2,
-                                                                                minimumFractionDigits: 2,
-                                                                            }).format(transaction.stockPrice)}
-                                                                        </p>
-                                                                    </td>
-                                                                    <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800 text-xs font-medium text-center'>
-                                                                        <p
-                                                                            className={
-                                                                                'text-gray-900 whitespace-no-wrap rounded-full p-1' +
-                                                                                (transaction.type === 'SELL' ? ' bg-green-300' : ' bg-red-400')
-                                                                            }>
-                                                                            {new Intl.NumberFormat('en-US', {
-                                                                                style: 'currency',
-                                                                                currency: 'USD',
-                                                                                maximumFractionDigits: 2,
-                                                                                minimumFractionDigits: 2,
-                                                                            }).format(transaction.totalAmount)}
-                                                                        </p>
-                                                                    </td>
+                                                            {transactions.map((transaction, i) => {
+                                                                return (
+                                                                    <tr key={i} className='bg-white dark:bg-darkCard hover:bg-gray-100 dark:hover:bg-gray-600'>
+                                                                        <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
+                                                                            <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
+                                                                                {transaction.type}
+                                                                            </p>
+                                                                        </td>
+                                                                        <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
+                                                                            <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
+                                                                                {transaction.ticker}
+                                                                            </p>
+                                                                        </td>
+                                                                        <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
+                                                                            <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
+                                                                                {transaction.shares} x &nbsp;
+                                                                                {new Intl.NumberFormat('en-US', {
+                                                                                    style: 'currency',
+                                                                                    currency: 'USD',
+                                                                                    maximumFractionDigits: 2,
+                                                                                    minimumFractionDigits: 2,
+                                                                                }).format(transaction.stockPrice)}
+                                                                            </p>
+                                                                        </td>
+                                                                        <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800 text-xs font-medium text-center'>
+                                                                            <p
+                                                                                className={
+                                                                                    'text-gray-900 whitespace-no-wrap rounded-full p-1' +
+                                                                                    (transaction.type === 'SELL' ? ' bg-green-300' : ' bg-red-400')
+                                                                                }>
+                                                                                {new Intl.NumberFormat('en-US', {
+                                                                                    style: 'currency',
+                                                                                    currency: 'USD',
+                                                                                    maximumFractionDigits: 2,
+                                                                                    minimumFractionDigits: 2,
+                                                                                }).format(transaction.totalAmount)}
+                                                                            </p>
+                                                                        </td>
 
-                                                                    <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
-                                                                        <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
-                                                                            {new Date(transaction.date).toLocaleTimeString()}
-                                                                            {' - '}
-                                                                            {new Date(transaction.date).toDateString()}
-                                                                        </p>
-                                                                    </td>
-                                                                </tr>
-                                                            ))}
+                                                                        <td className='px-5 py-5 border-b border-gray-200 dark:border-gray-800  text-xs font-medium text-center'>
+                                                                            <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
+                                                                                {new Date(transaction.date).toLocaleTimeString()}
+                                                                                {' - '}
+                                                                                {new Date(transaction.date).toDateString()}
+                                                                            </p>
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            })}
                                                         </tbody>
                                                     </table>
                                                 </div>
