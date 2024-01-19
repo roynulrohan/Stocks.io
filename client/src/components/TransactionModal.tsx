@@ -197,7 +197,6 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                 name='shares'
                                                 id='shares'
                                                 min={0}
-                                                max={10000}
                                                 className='h-8 w-full mx-10 border-none outline-none bg-gray-100 dark:bg-darkCard text-gray-900 dark:text-gray-200 p-2 text-center sm:text-sm'
                                                 placeholder='0'
                                             />
