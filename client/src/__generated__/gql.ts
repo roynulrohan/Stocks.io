@@ -22,7 +22,7 @@ const documents = {
     "\n    mutation Deposit($amount: Float!) {\n        deposit(amount: $amount) {\n            newBalance\n        }\n    }\n": types.DepositDocument,
     "\n    mutation Withdraw($amount: Float!) {\n        withdraw(amount: $amount) {\n            newBalance\n        }\n    }\n": types.WithdrawDocument,
     "\n    mutation ChangeUsername($newUsername: String!, $confirmPassword: String!) {\n        changeUsername(newUsername: $newUsername, confirmPassword: $confirmPassword) {\n            newUsername\n        }\n    }\n": types.ChangeUsernameDocument,
-    "\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n        }\n    }\n": types.GetOwnedStocksDocument,
+    "\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n            name\n            exchange\n            price\n            logo\n            ipo\n            industry\n            country\n            currency\n            weburl\n        }\n    }\n": types.GetOwnedStocksDocument,
     "\n    mutation BuyStock($ticker: String!, $shares: Int!) {\n        buyStock(ticker: $ticker, shares: $shares) {\n            ownedStock {\n                _id\n                userId\n                ticker\n                shares\n                initialInvestment\n            }\n            newBalance\n        }\n    }\n": types.BuyStockDocument,
     "\n    mutation SellStock($ticker: String!, $shares: Int!) {\n        sellStock(ticker: $ticker, shares: $shares) {\n            ownedStock {\n                _id\n                userId\n                ticker\n                shares\n                initialInvestment\n            }\n            newBalance\n        }\n    }\n": types.SellStockDocument,
 };
@@ -80,7 +80,7 @@ export function gql(source: "\n    mutation ChangeUsername($newUsername: String!
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
-export function gql(source: "\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n        }\n    }\n"): (typeof documents)["\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n        }\n    }\n"];
+export function gql(source: "\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n            name\n            exchange\n            price\n            logo\n            ipo\n            industry\n            country\n            currency\n            weburl\n        }\n    }\n"): (typeof documents)["\n    query GetOwnedStocks {\n        ownedStocks {\n            _id\n            userId\n            ticker\n            shares\n            initialInvestment\n            name\n            exchange\n            price\n            logo\n            ipo\n            industry\n            country\n            currency\n            weburl\n        }\n    }\n"];
 /**
  * The gql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

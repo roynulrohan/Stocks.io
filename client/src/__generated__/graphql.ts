@@ -72,13 +72,22 @@ export type MutationWithdrawArgs = {
   amount: Scalars['Float']['input'];
 };
 
-export type OwnedStock = {
+export type OwnedStock = Stock & {
   __typename?: 'OwnedStock';
   _id: Scalars['String']['output'];
+  country: Scalars['String']['output'];
+  currency: Scalars['String']['output'];
+  exchange: Scalars['String']['output'];
+  industry: Scalars['String']['output'];
   initialInvestment: Scalars['Float']['output'];
+  ipo: Scalars['String']['output'];
+  logo: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
   shares: Scalars['Int']['output'];
   ticker: Scalars['String']['output'];
   userId: Scalars['String']['output'];
+  weburl: Scalars['String']['output'];
 };
 
 export type Query = {
@@ -86,8 +95,8 @@ export type Query = {
   getUser: UserResponse;
   ownedStock: OwnedStock;
   ownedStocks: Array<Maybe<OwnedStock>>;
-  searchStocks: Array<Maybe<Stock>>;
-  stock: Stock;
+  searchStocks: Array<Maybe<StockData>>;
+  stock: StockData;
   transactions: Array<Transaction>;
 };
 
@@ -109,7 +118,20 @@ export type QueryStockArgs = {
 };
 
 export type Stock = {
-  __typename?: 'Stock';
+  country: Scalars['String']['output'];
+  currency: Scalars['String']['output'];
+  exchange: Scalars['String']['output'];
+  industry: Scalars['String']['output'];
+  ipo: Scalars['String']['output'];
+  logo: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  price: Scalars['Float']['output'];
+  ticker: Scalars['String']['output'];
+  weburl: Scalars['String']['output'];
+};
+
+export type StockData = Stock & {
+  __typename?: 'StockData';
   country: Scalars['String']['output'];
   currency: Scalars['String']['output'];
   exchange: Scalars['String']['output'];
@@ -169,14 +191,14 @@ export type SearchStocksQueryVariables = Exact<{
 }>;
 
 
-export type SearchStocksQuery = { __typename?: 'Query', searchStocks: Array<{ __typename?: 'Stock', ticker: string, name: string, exchange: string, price: number, logo: string, ipo: string, industry: string, country: string, currency: string, weburl: string } | null> };
+export type SearchStocksQuery = { __typename?: 'Query', searchStocks: Array<{ __typename?: 'StockData', ticker: string, name: string, exchange: string, price: number, logo: string, ipo: string, industry: string, country: string, currency: string, weburl: string } | null> };
 
 export type GetstockQueryVariables = Exact<{
   ticker?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetstockQuery = { __typename?: 'Query', stock: { __typename?: 'Stock', ticker: string, name: string, exchange: string, price: number, logo: string, ipo: string, industry: string, country: string, currency: string, weburl: string } };
+export type GetstockQuery = { __typename?: 'Query', stock: { __typename?: 'StockData', ticker: string, name: string, exchange: string, price: number, logo: string, ipo: string, industry: string, country: string, currency: string, weburl: string } };
 
 export type LoginUserMutationVariables = Exact<{
   username: Scalars['String']['input'];
@@ -230,7 +252,7 @@ export type ChangeUsernameMutation = { __typename?: 'Mutation', changeUsername: 
 export type GetOwnedStocksQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetOwnedStocksQuery = { __typename?: 'Query', ownedStocks: Array<{ __typename?: 'OwnedStock', _id: string, userId: string, ticker: string, shares: number, initialInvestment: number } | null> };
+export type GetOwnedStocksQuery = { __typename?: 'Query', ownedStocks: Array<{ __typename?: 'OwnedStock', _id: string, userId: string, ticker: string, shares: number, initialInvestment: number, name: string, exchange: string, price: number, logo: string, ipo: string, industry: string, country: string, currency: string, weburl: string } | null> };
 
 export type BuyStockMutationVariables = Exact<{
   ticker: Scalars['String']['input'];
@@ -258,6 +280,6 @@ export const GetTransactionsDocument = {"kind":"Document","definitions":[{"kind"
 export const DepositDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Deposit"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deposit"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"newBalance"}}]}}]}}]} as unknown as DocumentNode<DepositMutation, DepositMutationVariables>;
 export const WithdrawDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"Withdraw"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"amount"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"withdraw"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"amount"},"value":{"kind":"Variable","name":{"kind":"Name","value":"amount"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"newBalance"}}]}}]}}]} as unknown as DocumentNode<WithdrawMutation, WithdrawMutationVariables>;
 export const ChangeUsernameDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ChangeUsername"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"newUsername"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"confirmPassword"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"changeUsername"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"newUsername"},"value":{"kind":"Variable","name":{"kind":"Name","value":"newUsername"}}},{"kind":"Argument","name":{"kind":"Name","value":"confirmPassword"},"value":{"kind":"Variable","name":{"kind":"Name","value":"confirmPassword"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"newUsername"}}]}}]}}]} as unknown as DocumentNode<ChangeUsernameMutation, ChangeUsernameMutationVariables>;
-export const GetOwnedStocksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetOwnedStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ownedStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"ticker"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"initialInvestment"}}]}}]}}]} as unknown as DocumentNode<GetOwnedStocksQuery, GetOwnedStocksQueryVariables>;
+export const GetOwnedStocksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetOwnedStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ownedStocks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"ticker"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"initialInvestment"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"exchange"}},{"kind":"Field","name":{"kind":"Name","value":"price"}},{"kind":"Field","name":{"kind":"Name","value":"logo"}},{"kind":"Field","name":{"kind":"Name","value":"ipo"}},{"kind":"Field","name":{"kind":"Name","value":"industry"}},{"kind":"Field","name":{"kind":"Name","value":"country"}},{"kind":"Field","name":{"kind":"Name","value":"currency"}},{"kind":"Field","name":{"kind":"Name","value":"weburl"}}]}}]}}]} as unknown as DocumentNode<GetOwnedStocksQuery, GetOwnedStocksQueryVariables>;
 export const BuyStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"BuyStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ticker"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"shares"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"buyStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ticker"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ticker"}}},{"kind":"Argument","name":{"kind":"Name","value":"shares"},"value":{"kind":"Variable","name":{"kind":"Name","value":"shares"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ownedStock"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"ticker"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"initialInvestment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"newBalance"}}]}}]}}]} as unknown as DocumentNode<BuyStockMutation, BuyStockMutationVariables>;
 export const SellStockDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SellStock"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ticker"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"shares"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"sellStock"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"ticker"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ticker"}}},{"kind":"Argument","name":{"kind":"Name","value":"shares"},"value":{"kind":"Variable","name":{"kind":"Name","value":"shares"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"ownedStock"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"_id"}},{"kind":"Field","name":{"kind":"Name","value":"userId"}},{"kind":"Field","name":{"kind":"Name","value":"ticker"}},{"kind":"Field","name":{"kind":"Name","value":"shares"}},{"kind":"Field","name":{"kind":"Name","value":"initialInvestment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"newBalance"}}]}}]}}]} as unknown as DocumentNode<SellStockMutation, SellStockMutationVariables>;

@@ -1,12 +1,21 @@
 export const OwnedStockTypeDef = `#graphql
     scalar JSON
 
-    type OwnedStock {
+    type OwnedStock implements Stock {
         _id: String!
         userId: String!
         ticker: String!
         shares: Int!
         initialInvestment: Float!
+        name: String!
+        exchange: String!
+        price: Float!
+        logo: String!
+        ipo: String!
+        industry: String!
+        country: String!
+        currency: String!
+        weburl: String!
     }
 
     type Query {

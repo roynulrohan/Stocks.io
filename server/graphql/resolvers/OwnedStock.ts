@@ -20,7 +20,6 @@ export const OwnedStockResolver = {
     Query: {
         ownedStocks: async (_, args, context) => {
             const { token } = context;
-            console.log(token);
 
             const result = await verifyToken(token);
 
@@ -34,7 +33,20 @@ export const OwnedStockResolver = {
 
             const ownedStocks = await OwnedStock.find({ userId: result.userId }).sort({ ['userId']: 1 });
 
-            return ownedStocks;
+            const stockData = [];
+
+            for (const stock of ownedStocks) {
+                const stockInfo = await Stock.findOne({ ticker: stock.ticker });
+                stockData.push(stockInfo);
+            }
+
+            const merged = ownedStocks.map((stock, index) => {
+                return { ...stock.toJSON(), ...stockData[index]._doc };
+            })
+
+            console.log(ownedStocks)
+
+            return merged;
         },
         ownedStock: async (_, { ticker }, context) => {
             const { token } = context;

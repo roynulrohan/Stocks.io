@@ -35,8 +35,6 @@ export const updateStockPrices = async (id: number, interval: number, io?: Serve
 
                     if (priceJson?.c) {
                         price = priceJson?.c;
-
-                        console.log(stocks[index]?.ticker, ' - ', price);
                     }
                 }
 

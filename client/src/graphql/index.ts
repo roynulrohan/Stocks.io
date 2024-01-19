@@ -119,6 +119,15 @@ export const GET_OWNEDSTOCKS = gql(`
             ticker
             shares
             initialInvestment
+            name
+            exchange
+            price
+            logo
+            ipo
+            industry
+            country
+            currency
+            weburl
         }
     }
 `);
