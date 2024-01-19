@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { useLazyQuery } from '@apollo/client';
@@ -65,7 +65,7 @@ function App() {
                         }
                     />
 
-                    <Route element={<NotFoundPage />} />
+                    <Route path='*' element={<NotFoundPage />} />
                 </Routes>
                 <Footer />
             </ScrollToTop>

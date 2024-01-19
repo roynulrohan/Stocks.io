@@ -56,7 +56,7 @@ export default function StockPage({ ticker }: Props) {
         if (auth) {
             setModalVisible((prev) => !prev);
         } else {
-            navigate('/path', { state: { redirect: location.pathname } });
+            navigate('/auth', { state: { redirect: location.pathname } });
         }
     }, [auth, location.pathname, navigate]);
 
