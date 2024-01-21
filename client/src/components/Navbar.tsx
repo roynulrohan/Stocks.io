@@ -76,7 +76,7 @@ export default function NavBar() {
                                                         to={item.redirect}
                                                         className={classNames(
                                                             location.pathname === item.redirect
-                                                                ? 'dark:bg-darkField dark:text-white bg-gray-100'
+                                                                ? 'dark:bg-darkField dark:text-white bg-gray-200'
                                                                 : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
                                                             'text-black px-3 py-2 rounded-md text-sm flex items-center'
                                                         )}
@@ -96,7 +96,7 @@ export default function NavBar() {
                                                                 to='/portfolio'
                                                                 className={classNames(
                                                                     location.pathname === '/portfolio'
-                                                                        ? 'dark:bg-darkField dark:text-white bg-gray-100'
+                                                                        ? 'dark:bg-darkField dark:text-white bg-gray-200'
                                                                         : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
                                                                     'text-black px-3 py-2 rounded-md text-sm flex items-center'
                                                                 )}
@@ -105,22 +105,21 @@ export default function NavBar() {
                                                             </Link>
                                                         </motion.div>
                                                         <motion.div
-                                                            key='Balance'
+                                                            key='Account'
                                                             initial={{ y: -15, opacity: 0 }}
                                                             animate={{ y: 0, opacity: 1 }}
                                                             exit={{ y: -15, opacity: 0 }}
-                                                            transition={{ duration: 0.25 }}
-                                                            className='text-black bg-green-300 rounded-xl text-sm flex items-center transition-all'>
-                                                            <Link to='/account' className='px-3 py-2 '>
-                                                                Balance:&nbsp;
-                                                                <span className='font-bold'>
-                                                                    {new Intl.NumberFormat('en-US', {
-                                                                        style: 'currency',
-                                                                        currency: 'USD',
-                                                                        maximumFractionDigits: 2,
-                                                                        minimumFractionDigits: 2,
-                                                                    }).format(auth ? auth?.user?.balance : 0)}
-                                                                </span>
+                                                            transition={{ duration: 0.25 }}>
+                                                            <Link
+                                                                to='/account'
+                                                                className={classNames(
+                                                                    location.pathname === '/account'
+                                                                        ? 'dark:bg-darkField dark:text-white bg-gray-200'
+                                                                        : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
+                                                                    'text-black px-3 py-2 rounded-md text-sm flex items-center'
+                                                                )}
+                                                                aria-current={location.pathname === '/account' ? 'page' : undefined}>
+                                                                Account
                                                             </Link>
                                                         </motion.div>
                                                     </>
@@ -141,7 +140,7 @@ export default function NavBar() {
                                                     <Menu.Button
                                                         className={classNames(
                                                             isAuthenticated ? 'w-10' : 'w-auto',
-                                                            'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
+                                                            'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
                                                         )}
                                                         onClick={() => {
                                                             if (!isAuthenticated) {
@@ -211,7 +210,7 @@ export default function NavBar() {
                                         <button
                                             className={classNames(
                                                 isAuthenticated ? 'w-10' : 'w-auto',
-                                                'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
+                                                'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
                                             )}
                                             onClick={() => {
                                                 handleLogin();
@@ -262,18 +261,15 @@ export default function NavBar() {
                                             </Link>
 
                                             <Link
-                                                key='Balance'
                                                 to='/account'
-                                                className='text-black dark:bg-green-400 bg-green-300 w-max px-3 py-2 rounded-md text-sm flex items-center transition-all'>
-                                                Balance:&nbsp;
-                                                <span className='font-bold'>
-                                                    {new Intl.NumberFormat('en-US', {
-                                                        style: 'currency',
-                                                        currency: 'USD',
-                                                        maximumFractionDigits: 2,
-                                                        minimumFractionDigits: 2,
-                                                    }).format(auth ? auth?.user?.balance : 0)}
-                                                </span>
+                                                className={classNames(
+                                                    location.pathname === '/account'
+                                                        ? 'dark:bg-darkField dark:text-white bg-gray-200'
+                                                        : 'dark:text-gray-300 dark:hover:bg-gray-700 dark:hover:text-white hover:bg-gray-100',
+                                                    'text-black px-3 py-2 rounded-md text-sm flex items-center'
+                                                )}
+                                                aria-current={location.pathname === '/account' ? 'page' : undefined}>
+                                                Account
                                             </Link>
                                         </>
                                     )}
