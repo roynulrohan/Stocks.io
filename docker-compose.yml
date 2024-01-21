@@ -1,25 +1,14 @@
 version: '3.9'
 services:
-  web:
+  api:
     build:
-      context: .
+      context: server
       dockerfile: Dockerfile
     ports:
-      - "443:443"
-    networks:
-      - stocks-io-network
+      - "54321:54321"
     environment:
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DB=${MONGO_DB}
       - JWT_SECRET=${JWT_SECRET}
 
-networks:
-    stocks-io-network:
-        driver: bridge
-
-volumes:
-    data-volume:
-    node_modules:
-    web-root:
-      driver: local
