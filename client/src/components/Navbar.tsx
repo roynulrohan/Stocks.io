@@ -39,7 +39,7 @@ export default function NavBar() {
 
     const handleSignOut = () => {
         dispatch({ type: LOGOUT });
-        window.location.reload();
+        navigate(0);
     };
 
     return (
@@ -134,83 +134,92 @@ export default function NavBar() {
                                 <div className='absolute inset-y-0 right-0 flex items-center pr-2 md:static md:inset-auto md:ml-6 md:pr-0'>
                                     {/* Profile dropdown */}
 
-                                    <Menu as='div' className='ml-3 relative'>
-                                        {({ open }: any) => (
-                                            <div>
-                                                <Menu.Button
-                                                    className={classNames(
-                                                        isAuthenticated ? 'w-10' : 'w-auto',
-                                                        'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
-                                                    )}
-                                                    onClick={() => {
-                                                        if (!isAuthenticated) {
-                                                            handleLogin();
-                                                        }
-                                                    }}>
-                                                    <span className='hidden sm:block'>{isAuthenticated ? auth?.user?.username : 'Login'}</span>
-                                                    <span className='block sm:hidden'>
-                                                        {isAuthenticated ? auth?.user?.username.at(0)?.toUpperCase() : 'Login'}
-                                                    </span>
-                                                    {isAuthenticated &&
-                                                        (open ? (
+                                    {isAuthenticated ? (
+                                        <Menu as='div' className='ml-3 relative'>
+                                            {({ open }: any) => (
+                                                <div>
+                                                    <Menu.Button
+                                                        className={classNames(
+                                                            isAuthenticated ? 'w-10' : 'w-auto',
+                                                            'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
+                                                        )}
+                                                        onClick={() => {
+                                                            if (!isAuthenticated) {
+                                                                handleLogin();
+                                                            }
+                                                        }}>
+                                                        <span className='hidden sm:block'>{auth?.user?.username}</span>
+                                                        <span className='block sm:hidden'>{auth?.user?.username.at(0)?.toUpperCase()}</span>
+                                                        {open ? (
                                                             <ChevronUpIcon className='hidden sm:block h-5' />
                                                         ) : (
                                                             <ChevronDownIcon className='hidden sm:block h-5' />
-                                                        ))}
-                                                </Menu.Button>
+                                                        )}
+                                                    </Menu.Button>
 
-                                                <Transition
-                                                    as={Fragment}
-                                                    enter='transition ease-out duration-100'
-                                                    enterFrom='transform opacity-0 scale-95'
-                                                    enterTo='transform opacity-100 scale-100'
-                                                    leave='transition ease-in duration-75'
-                                                    leaveFrom='transform opacity-100 scale-100'
-                                                    leaveTo='transform opacity-0 scale-95'>
-                                                    <Menu.Items
-                                                        className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'
-                                                        hidden={!isAuthenticated}>
-                                                        <Menu.Item>
-                                                            {({ active }: any) => (
-                                                                <Link
-                                                                    to='/account'
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
-                                                                    )}>
-                                                                    Account
-                                                                </Link>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }: any) => (
-                                                                <Link
-                                                                    to='/portfolio'
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-gray-700'
-                                                                    )}>
-                                                                    Portfolio
-                                                                </Link>
-                                                            )}
-                                                        </Menu.Item>
-                                                        <Menu.Item>
-                                                            {({ active }: any) => (
-                                                                <div
-                                                                    onClick={handleSignOut}
-                                                                    className={classNames(
-                                                                        active ? 'bg-gray-100' : '',
-                                                                        'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
-                                                                    )}>
-                                                                    Sign out
-                                                                </div>
-                                                            )}
-                                                        </Menu.Item>
-                                                    </Menu.Items>
-                                                </Transition>
-                                            </div>
-                                        )}
-                                    </Menu>
+                                                    <Transition
+                                                        as={Fragment}
+                                                        enter='transition ease-out duration-100'
+                                                        enterFrom='transform opacity-0 scale-95'
+                                                        enterTo='transform opacity-100 scale-100'
+                                                        leave='transition ease-in duration-75'
+                                                        leaveFrom='transform opacity-100 scale-100'
+                                                        leaveTo='transform opacity-0 scale-95'>
+                                                        <Menu.Items className='origin-top-right absolute right-0 mt-2 w-48 rounded-2xl shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none'>
+                                                            <Menu.Item>
+                                                                {({ active }: any) => (
+                                                                    <Link
+                                                                        to='/account'
+                                                                        className={classNames(
+                                                                            active ? 'bg-gray-100' : '',
+                                                                            'block rounded-2xl px-4 py-2 text-sm text-gray-700'
+                                                                        )}>
+                                                                        Account
+                                                                    </Link>
+                                                                )}
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                {({ active }: any) => (
+                                                                    <Link
+                                                                        to='/portfolio'
+                                                                        className={classNames(
+                                                                            active ? 'bg-gray-100' : '',
+                                                                            'block rounded-2xl px-4 py-2 text-sm text-gray-700'
+                                                                        )}>
+                                                                        Portfolio
+                                                                    </Link>
+                                                                )}
+                                                            </Menu.Item>
+                                                            <Menu.Item>
+                                                                {({ active }: any) => (
+                                                                    <div
+                                                                        onClick={handleSignOut}
+                                                                        className={classNames(
+                                                                            active ? 'bg-gray-100' : '',
+                                                                            'block rounded-2xl px-4 py-2 text-sm text-red-600 cursor-pointer'
+                                                                        )}>
+                                                                        Sign out
+                                                                    </div>
+                                                                )}
+                                                            </Menu.Item>
+                                                        </Menu.Items>
+                                                    </Transition>
+                                                </div>
+                                            )}
+                                        </Menu>
+                                    ) : (
+                                        <button
+                                            className={classNames(
+                                                isAuthenticated ? 'w-10' : 'w-auto',
+                                                'transition-all h-10 sm:w-auto sm:h-10 text-sm sm:px-4 sm:py-2 sm:justify-around rounded-full outline-none border-none lg:w-48 flex justify-center items-center px-3 py-1 font-medium  hover:bg-opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:bg-pink-600 focus-visible:ring-opacity-75 shadow-md'
+                                            )}
+                                            onClick={() => {
+                                                handleLogin();
+                                            }}>
+                                            <span className='hidden sm:block'>Login</span>
+                                            <span className='block sm:hidden'>Login</span>
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>

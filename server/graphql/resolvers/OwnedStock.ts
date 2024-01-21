@@ -44,8 +44,6 @@ export const OwnedStockResolver = {
                 return { ...stock.toJSON(), ...stockData[index]._doc };
             })
 
-            console.log(ownedStocks)
-
             return merged;
         },
         ownedStock: async (_, { ticker }, context) => {

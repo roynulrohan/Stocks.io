@@ -58,6 +58,8 @@ const Auth = () => {
                     if (ownedStocksData) {
                         dispatch({ type: OWNED_STOCKS, payload: ownedStocksData?.ownedStocks });
                     }
+
+                    navigate(location?.state?.redirect || '/account');
                 })
                 .catch((err) => {
                     setErrors(err?.message);

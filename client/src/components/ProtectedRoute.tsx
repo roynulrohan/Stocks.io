@@ -9,7 +9,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     const [profile] = useState(JSON.parse(localStorage.getItem('profile') || '{}'));
 
     if (!profile.user) {
-        return <Navigate to='/landing' replace />;
+        return <Navigate to='/auth' replace />;
     }
 
     return children;

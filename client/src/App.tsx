@@ -49,7 +49,7 @@ function App() {
             <ScrollToTop>
                 <Navbar />
                 <Routes location={location} key={location.pathname}>
-                    <Route path='/' element={<HomePage />} />
+                    <Route index element={<HomePage />} />
                     <Route path='/market' element={<MarketPage />} />
                     <Route path='/auth' element={<AuthPage />} />
 
