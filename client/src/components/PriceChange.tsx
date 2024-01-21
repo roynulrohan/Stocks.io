@@ -51,8 +51,9 @@ const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, sty
                     style: 'currency',
                     currency,
                 }).format(currentPrice)}
-            </span>{'  '}
-            <span className='font-medium text-xs'>{priceChange?.toFixed(2)}%</span>
+            </span>
+            {'  '}
+            <span className='font-medium text-xs'>{isGain && '+'}{priceChange?.toFixed(2)}%</span>
         </p>
     );
 });

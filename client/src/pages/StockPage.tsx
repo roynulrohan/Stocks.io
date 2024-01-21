@@ -27,13 +27,7 @@ export default function StockPage({ ticker }: Props) {
     const stockData = useMemo<Stock | undefined>(() => stockDataRaw?.stock, [stockDataRaw]);
 
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
-    const prevPrice = useMemo(() => {
-        if (currentPrice !== -1) {
-            return currentPrice;
-        }
-
-        return -1;
-    }, [currentPrice]);
+    const [prevPrice, setPrevPrice] = useState(-1);
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -44,7 +38,10 @@ export default function StockPage({ ticker }: Props) {
         if (socket === null) return;
 
         socket?.on(ticker, (priceData: StockUpdate) => {
-            setCurrentPrice(priceData.price);
+            setCurrentPrice((prev) => {
+                setPrevPrice(prev);
+                return priceData.price;
+            });
         });
 
         return () => {
@@ -59,6 +56,22 @@ export default function StockPage({ ticker }: Props) {
             navigate('/auth', { state: { redirect: location.pathname } });
         }
     }, [auth, location.pathname, navigate]);
+
+    const currentPriceView = useMemo(() => {
+        if (!stockData) {
+            return null;
+        }
+
+        return (
+            <PriceChange
+                currentPrice={currentPrice !== -1 ? currentPrice : stockData.price}
+                prevPrice={(prevPrice !== -1 ? prevPrice : stockData.price) || 0}
+                currency={stockData.currency}
+                ticker={ticker}
+                styleset='text-center min-w-34 lg:text-sm text-xs px-4'
+            />
+        );
+    }, [currentPrice, stockData, ticker, prevPrice]);
 
     return (
         <div className='dark:bg-darkBg mt-16 min-h-screen w-full flex flex-col'>
@@ -207,15 +220,7 @@ export default function StockPage({ ticker }: Props) {
                             {stockData?.name} <span className='dark:text-gray-400 text-gray-600 font-normal'> - {stockData?.exchange}</span>
                             <span className='dark:text-gray-400 text-gray-600 font-normal'> : {stockData?.ticker}</span>
                         </h1>
-                        {stockData?.price && (
-                            <PriceChange
-                                currentPrice={currentPrice !== -1 ? currentPrice : stockData?.price || 0}
-                                prevPrice={(prevPrice !== -1 ? prevPrice : stockData?.price) || 0}
-                                currency={stockData?.currency}
-                                ticker={ticker}
-                                styleset='text-center min-w-34 lg:text-sm text-xs px-4'
-                            />
-                        )}
+                        {currentPriceView}
                     </div>
                     <div className='mt-10'>
                         <div>
