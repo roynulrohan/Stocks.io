@@ -71,7 +71,9 @@ const PriceChart = React.memo((props: any) => {
                             // Hide every 2nd tick label
                             return index % 2 === 0 ? this.getLabelForValue(val) : '';
                         },
-                        getLabelForValue: (val: string) => {},
+                        getLabelForValue: (val: string) => {
+                            val
+                        },
                     },
                 },
                 y: {
