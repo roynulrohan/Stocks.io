@@ -9,11 +9,11 @@ export default function ToggleDarkMode() {
     const [isDark, setIsDark] = useDarkMode();
 
     return (
-        <Switch checked={isDark} onChange={setIsDark}>
-            <span className={(isDark ? 'bg-gray-700' : '') + ' rounded-full shadow-md p-1 h-8 w-16 flex'}>
+        <Switch className={'group'} checked={isDark} onChange={setIsDark}>
+            <span className={(isDark ? 'bg-gray-700 hover:text-gray-100' : ' bg-gray-100 ') + ' rounded-full shadow-md p-1 h-8 w-16 flex'}>
                 <span
                     className={`block h-full w-1/2 rounded-full transition duration-300 ease-in-out transform ${
-                        isDark ? 'bg-transparent text-yellow-400 translate-x-full' : 'text-yellow-400'
+                        isDark ? 'bg-transparent text-inherit  translate-x-full' : 'text-yellow-500 group-hover:rotate-180'
                     }`}>
                     {isDark ? (
                         <svg xmlns='http://www.w3.org/2000/svg' className='h-full w-full' viewBox='0 0 20 20' fill='currentColor'>
