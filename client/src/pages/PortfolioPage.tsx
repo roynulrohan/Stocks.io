@@ -14,12 +14,16 @@ interface PortfolioTableRowProps {
 const PortfolioTableRow = ({ stock, navigate, ...rest }: PortfolioTableRowProps) => {
     const socket = useSocket();
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
+    const [prevPrice, setPrevPrice] = useState<number>(-1);
 
     useEffect(() => {
         if (socket === null) return;
 
         socket?.on(stock.ticker, (priceData: StockUpdate) => {
-            setCurrentPrice(priceData.price);
+            setCurrentPrice((prev) => {
+                setPrevPrice(prev);
+                return priceData.price;
+            });
         });
 
         return () => {
@@ -34,19 +38,27 @@ const PortfolioTableRow = ({ stock, navigate, ...rest }: PortfolioTableRowProps)
             onClick={() => {
                 navigate('/stock/' + stock.ticker);
             }}>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
-                <img className='w-16 h-8 object-contain mx-auto' src={stock.logo} alt={stock?.name + ' logo'} />
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
+                <img className='w-16 h-12 object-contain mx-auto' src={stock.logo} alt={stock?.name + ' logo'} />
             </td>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
-                <p className='text-gray-900 dark:text-white whitespace-no-wrap'>{stock.ticker}</p>
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
+                <p className='text-gray-700 dark:text-white whitespace-no-wrap h-fit font-light'>{stock.name}</p>
+                <p className='text-gray-900 dark:text-white whitespace-no-wrap mt-1 font-semibold'>{stock.ticker}</p>
             </td>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
-                <p className='text-gray-900 dark:text-white whitespace-no-wrap h-fit'>{stock.name}</p>
-            </td>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
                 <p className='text-gray-900 dark:text-white whitespace-no-wrap'>{stock.shares}</p>
             </td>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
+                <PriceChange
+                    id={stock.ticker + '-currentPrice'}
+                    currentPrice={currentPrice !== -1 ? currentPrice : stock.price}
+                    prevPrice={(prevPrice !== -1 ? prevPrice : stock.price) || 0}
+                    currency={stock.currency}
+                    ticker={stock.ticker}
+                    className='text-center px-4 mx-auto w-fit'
+                />
+            </td>
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
                 <p className='text-gray-900 dark:text-white whitespace-no-wrap'>
                     {new Intl.NumberFormat('en-US', {
                         style: 'currency',
@@ -56,13 +68,14 @@ const PortfolioTableRow = ({ stock, navigate, ...rest }: PortfolioTableRowProps)
                     }).format(stock.initialInvestment)}
                 </p>
             </td>
-            <td className='px-5 py-5 border-b border-gray-200 dark:border-darkField text-xs font-medium text-center'>
+            <td className='px-5 py-3 border-b border-gray-200 dark:border-darkField text-sm font-medium text-center'>
                 <PriceChange
+                    id={stock.ticker + '-investmentValue'}
                     currentPrice={(currentPrice !== -1 ? currentPrice : stock?.price || 0) * stock?.shares}
                     prevPrice={stock.initialInvestment}
                     currency={stock.currency}
                     ticker={stock.ticker}
-                    styleset='text-center px-4 mx-auto w-fit'
+                    className='text-center px-4 mx-auto w-fit'
                 />
             </td>
         </tr>
@@ -82,41 +95,40 @@ const PortfolioPage = () => {
             <div className='dark:bg-darkBg pb-10 min-h-screen w-full h-full flex flex-col items-center text-center'>
                 <div className='mt-32 text-3xl font-medium dark:text-white'>My Portfolio</div>
                 <div className='mt-10 w-full flex justify-center'>
-                    <div className='container rounded-lg relative overflow-x-auto'>
-                        <div className='shadow relative dark:bg-darkField bg-gray-100 rounded-2xl p-3'>
+                    <div className='container overflow-x-auto'>
+                        <div className='shadow dark:bg-darkField bg-gray-100 rounded-2xl p-3'>
                             <table className='leading-normal w-full h-full'>
                                 <thead>
                                     <tr>
                                         <th
                                             scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
                                             Logo
                                         </th>
                                         <th
                                             scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
-                                            Ticker
-                                        </th>
-                                        <th
-                                            scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
                                             Name
                                         </th>
                                         <th
                                             scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
                                             Shares
                                         </th>
                                         <th
                                             scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
-                                            Invested
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-gray-800 text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
+                                            Current Price
                                         </th>
-
                                         <th
                                             scope='col'
-                                            className='px-5 py-3  border-b border-gray-200 dark:border-gray-800 text-gray-800  dark:text-white text-center text-xs uppercase font-normal'>
-                                            Current Value
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-darkField text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
+                                            Invested
+                                        </th>
+                                        <th
+                                            scope='col'
+                                            className='px-5 py-3  border-b border-gray-200 dark:border-gray-800 text-gray-800  dark:text-white text-center text-sm uppercase font-normal'>
+                                            Current Investment Value
                                         </th>
                                     </tr>
                                 </thead>

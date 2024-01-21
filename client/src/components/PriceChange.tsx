@@ -1,11 +1,12 @@
 import React, { useEffect, useMemo, useRef } from 'react';
+import { cn } from '../utils/cn';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
     currentPrice: number;
     prevPrice: number;
     currency: string;
     ticker: string;
-    styleset: string;
+    hideChange?: boolean;
 }
 
 const calculateChange = (a: number, b: number) => {
@@ -15,7 +16,7 @@ const calculateChange = (a: number, b: number) => {
     return roundedChange;
 };
 
-const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, styleset }: Props) => {
+const PriceChange = React.memo(({ currentPrice, prevPrice, currency, hideChange = false, id, className }: Props) => {
     const isMounted = useRef(false);
 
     useEffect(() => {
@@ -26,34 +27,45 @@ const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, sty
     }, []);
 
     const priceChange = useMemo(() => {
-        if (!isMounted.current) {
-            const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
+        if (!isMounted.current && id) {
+            const sessionData = JSON.parse(window.sessionStorage.getItem(id) || '{}');
 
             if (sessionData.priceChange) {
                 return sessionData?.priceChange;
             }
         }
         return calculateChange(prevPrice, currentPrice);
-    }, [currentPrice, prevPrice, ticker]);
+    }, [currentPrice, prevPrice, id]);
 
     const isGain = useMemo(() => priceChange > 0, [priceChange]);
 
     useEffect(() => {
-        if (ticker !== '') {
-            window.sessionStorage.setItem(ticker + '-PriceChange', JSON.stringify({ isGain, priceChange }));
+        if (id) {
+            window.sessionStorage.setItem(id, JSON.stringify({ isGain, priceChange }));
         }
-    }, [priceChange, isGain, ticker]);
+    }, [priceChange, isGain, id]);
 
     return (
-        <p className={'text-gray-900 rounded-full h-fit px-2 py-1 whitespace-nowrap ' + styleset + (isGain ? ' bg-green-300' : ' bg-red-400')}>
+        <p
+            className={cn(
+                'text-gray-900 rounded-full h-fit px-2 py-1 whitespace-nowrap ',
+                className,
+                isGain ? ' bg-green-300' : ' bg-red-400',
+                priceChange === 0 && 'bg-gray-100'
+            )}>
             <span className='font-semibold'>
                 {new Intl.NumberFormat('en-US', {
                     style: 'currency',
                     currency,
                 }).format(currentPrice)}
             </span>
-            {'  '}
-            <span className='font-medium text-xs'>{isGain && '+'}{priceChange?.toFixed(2)}%</span>
+            {!hideChange && (
+                <span className='font-medium text-xs'>
+                    {'  '}
+                    {isGain && '+'}
+                    {priceChange?.toFixed(2)}%
+                </span>
+            )}
         </p>
     );
 });

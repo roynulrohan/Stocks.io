@@ -68,11 +68,12 @@ const StockCard = React.memo(({ stock }: Props) => {
                     <span className='dark:text-gray-400'>{stock?.exchange}</span> : <span className='dark:text-gray-400 font-semibold'>{stock?.ticker}</span>
                 </p>
                 <PriceChange
+                    id={stock?.ticker + '-currentPrice'}
                     currentPrice={currentPrice !== -1 ? currentPrice : stock?.price}
                     prevPrice={prevPrice.current}
                     currency={stock?.currency}
                     ticker={stock?.ticker}
-                    styleset='text-xs lg:text-md'
+                    className='text-xs lg:text-md'
                 />
                 <PriceChart
                     key={stock?.ticker + ' price change'}

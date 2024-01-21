@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { BUY_STOCK, SELL_STOCK } from '../graphql';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { UPDATE_BALANCE, UPDATE_STOCK } from '../redux/actions';
 import { Switch } from '@headlessui/react';
 import { useMutation } from '@apollo/client';
 import checkIcon from '../assets/icons/checked.png';
+import { AuthState } from '../types';
 
 interface Props {
     id: string;
@@ -18,6 +19,7 @@ interface Props {
 
 export default function TransactionModal({ id, isHidden, toggle, ticker, exchange, currentPrice, sharesOwned }: Props) {
     const dispatch = useDispatch();
+    const currentBalance = useSelector((state: AuthState) => state.authReducer.authData.user.balance);
     const [buyStockMutation] = useMutation(BUY_STOCK);
     const [sellStockMutation] = useMutation(SELL_STOCK);
     const [isSelling, setIsSelling] = useState(false);
@@ -130,10 +132,21 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
             className='overflow-y-auto overflow-x-hidden bg-gray-400 dark:bg-gray-800 bg-opacity-50 dark:bg-opacity-40 fixed z-50 justify-center items-center h-modal md:h-full md:inset-0'>
             <div className='relative px-4 flex flex-col justify-center mx-auto w-full max-w-lg h-full'>
                 <div className='relative bg-white rounded-lg shadow-xl mb-16 dark:bg-darkField'>
-                    <div className='flex justify-end p-2 absolute right-0'>
+                    <div className='flex justify-center items-center p-3 absolute w-full'>
+                        <p className='mx-auto text-gray-700 dark:text-gray-200 h-fit'>
+                            Balance:&nbsp;
+                            <span className='font-bold dark:text-green-400 text-green-500 flex-grow'>
+                                {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                    maximumFractionDigits: 2,
+                                    minimumFractionDigits: 2,
+                                }).format(currentBalance)}
+                            </span>
+                        </p>
                         <button
                             type='button'
-                            className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white'
+                            className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white'
                             onClick={closeModal}>
                             <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
                                 <path

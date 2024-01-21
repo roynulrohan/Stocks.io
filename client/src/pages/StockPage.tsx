@@ -64,11 +64,12 @@ export default function StockPage({ ticker }: Props) {
 
         return (
             <PriceChange
+                id={stockData.ticker + '-currentPrice'}
                 currentPrice={currentPrice !== -1 ? currentPrice : stockData.price}
                 prevPrice={(prevPrice !== -1 ? prevPrice : stockData.price) || 0}
                 currency={stockData.currency}
                 ticker={ticker}
-                styleset='text-center min-w-34 lg:text-sm text-xs px-4'
+                className='text-center min-w-34 lg:text-sm text-xs px-4'
             />
         );
     }, [currentPrice, stockData, ticker, prevPrice]);
@@ -176,11 +177,12 @@ export default function StockPage({ ticker }: Props) {
                                         <span>Current Value &nbsp;</span>
                                     </h1>
                                     <PriceChange
+                                        id={stockData?.ticker + '-investmentValue'}
                                         currentPrice={(currentPrice !== -1 ? currentPrice : stockData?.price || 0) * ownedStock?.shares}
                                         prevPrice={ownedStock?.initialInvestment}
                                         currency={stockData?.currency || 'USD'}
                                         ticker=''
-                                        styleset='text-center min-w-34 px-4'
+                                        className='text-center min-w-34 px-4'
                                     />
                                 </div>
                                 <div className='flex items-center text-gray-700 dark:text-gray-200'>
