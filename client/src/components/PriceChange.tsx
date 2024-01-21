@@ -1,80 +1,71 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { cn } from '../utils/cn';
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLParagraphElement> {
     currentPrice: number;
     prevPrice: number;
     currency: string;
     ticker: string;
-    styleset: string;
+    hideChange?: boolean;
 }
 
-const PriceChange = React.memo(({ currentPrice, prevPrice, currency, ticker, styleset }: Props) => {
-    const [currencySymbol, setCurrencySymbol] = useState('$');
-    const [isCAD, setIsCAD] = useState(false);
-    const [priceChange, setPriceChange] = useState<number>(0);
-    const [isGain, setIsGain] = useState(true);
-    const [mounted, setMounted] = useState(false);
+const calculateChange = (a: number, b: number) => {
+    const percentageChange = ((b - a) / Math.abs(a)) * 100;
+    const roundedChange = Number(percentageChange.toFixed(2));
+
+    return roundedChange;
+};
+
+const PriceChange = React.memo(({ currentPrice, prevPrice, currency, hideChange = false, id, className }: Props) => {
+    const isMounted = useRef(false);
 
     useEffect(() => {
-        if (ticker !== '') {
-            const sessionData = JSON.parse(window.sessionStorage.getItem(ticker + '-PriceChange') || '{}');
-
-            if (sessionData.priceChange) {
-                setIsGain(sessionData?.isGain);
-                setPriceChange(sessionData?.priceChange);
-            }
-        }
-
-        setMounted(true);
+        isMounted.current = true;
+        return () => {
+            isMounted.current = false;
+        };
     }, []);
 
-    useEffect(() => {
-        if (ticker !== '') {
-            if (mounted) {
-                calculateChange();
+    const priceChange = useMemo(() => {
+        if (!isMounted.current && id) {
+            const sessionData = JSON.parse(window.sessionStorage.getItem(id) || '{}');
+
+            if (sessionData.priceChange) {
+                return sessionData?.priceChange;
             }
-        } else {
-            calculateChange();
         }
-    }, [currentPrice]);
+        return calculateChange(prevPrice, currentPrice);
+    }, [currentPrice, prevPrice, id]);
+
+    const isGain = useMemo(() => priceChange > 0, [priceChange]);
 
     useEffect(() => {
-        if (ticker !== '') {
-            window.sessionStorage.setItem(ticker + '-PriceChange', JSON.stringify({ isGain, priceChange }));
+        if (id) {
+            window.sessionStorage.setItem(id, JSON.stringify({ isGain, priceChange }));
         }
-    }, [priceChange]);
-
-    useEffect(() => {
-        if (currency === 'USD') {
-            setCurrencySymbol('$');
-        } else if (currency === 'EUR') {
-            setCurrencySymbol('€');
-        } else if (currency === 'CAD') {
-            setIsCAD(true);
-        }
-    }, [currency]);
-
-    const calculateChange = () => {
-        if (currentPrice >= prevPrice) {
-            setIsGain(true);
-            const change = ((currentPrice - prevPrice) / currentPrice) * 100;
-            setPriceChange(change);
-        } else {
-            setIsGain(false);
-            const change = ((prevPrice - currentPrice) / prevPrice) * 100;
-            setPriceChange(change);
-        }
-    };
+    }, [priceChange, isGain, id]);
 
     return (
-        <p className={'text-gray-900 rounded-full px-2 py-1 ' + styleset + (isGain ? ' bg-green-300' : ' bg-red-400')}>
+        <p
+            className={cn(
+                'text-gray-900 rounded-full h-fit px-2 py-1 whitespace-nowrap ',
+                className,
+                isGain ? ' bg-green-300' : ' bg-red-400',
+                priceChange === 0 && 'bg-gray-100'
+            )}>
             <span className='font-semibold'>
-                {currencySymbol}
-                {currentPrice.toFixed(2)}
-            </span>{' '}
-            <span className='font-medium'>
-                {isCAD && <span>CAD</span>} {isGain ? ' +' + priceChange?.toFixed(2) : ' -' + priceChange?.toFixed(2)}%
+                {new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency,
+                }).format(currentPrice)}
             </span>
+            {!hideChange && (
+                <span className='font-medium text-xs'>
+                    {'  '}
+                    {isGain && '+'}
+                    {priceChange?.toFixed(2)}%
+                </span>
+            )}
         </p>
     );
 });

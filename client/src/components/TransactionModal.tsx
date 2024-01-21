@@ -1,11 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BUY_STOCK, SELL_STOCK } from '../graphql';
-import { useDispatch } from 'react-redux';
-import { UPDATE_BALANCE, UPDATE_STOCK } from '../constants/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { UPDATE_BALANCE, UPDATE_STOCK } from '../redux/actions';
 import { Switch } from '@headlessui/react';
 import { useMutation } from '@apollo/client';
-// @ts-ignore
 import checkIcon from '../assets/icons/checked.png';
+import { AuthState } from '../types';
 
 interface Props {
     id: string;
@@ -19,6 +19,7 @@ interface Props {
 
 export default function TransactionModal({ id, isHidden, toggle, ticker, exchange, currentPrice, sharesOwned }: Props) {
     const dispatch = useDispatch();
+    const currentBalance = useSelector((state: AuthState) => state.authReducer.authData.user.balance);
     const [buyStockMutation] = useMutation(BUY_STOCK);
     const [sellStockMutation] = useMutation(SELL_STOCK);
     const [isSelling, setIsSelling] = useState(false);
@@ -92,8 +93,8 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.sellStock } });
-                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.sellStock.newBalance } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.sellStock.ownedStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.sellStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -107,8 +108,8 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                     .then(({ data }) => {
                         setTimeout(() => {
                             setErrors('');
-                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data.buyStock } });
-                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data.buyStock.newBalance } });
+                            dispatch({ type: UPDATE_STOCK, payload: { ticker, stock: data?.buyStock.ownedStock } });
+                            dispatch({ type: UPDATE_BALANCE, payload: { newBalance: data?.buyStock.newBalance } });
                             setIsLoading(false);
                             completeTransaction();
                         }, 1500);
@@ -131,10 +132,21 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
             className='overflow-y-auto overflow-x-hidden bg-gray-400 dark:bg-gray-800 bg-opacity-50 dark:bg-opacity-40 fixed z-50 justify-center items-center h-modal md:h-full md:inset-0'>
             <div className='relative px-4 flex flex-col justify-center mx-auto w-full max-w-lg h-full'>
                 <div className='relative bg-white rounded-lg shadow-xl mb-16 dark:bg-darkField'>
-                    <div className='flex justify-end p-2 absolute right-0'>
+                    <div className='flex justify-center items-center p-3 absolute w-full'>
+                        <p className='mx-auto text-gray-700 dark:text-gray-200 h-fit'>
+                            Balance:&nbsp;
+                            <span className='font-bold dark:text-green-400 text-green-500 flex-grow'>
+                                {new Intl.NumberFormat('en-US', {
+                                    style: 'currency',
+                                    currency: 'USD',
+                                    maximumFractionDigits: 2,
+                                    minimumFractionDigits: 2,
+                                }).format(currentBalance)}
+                            </span>
+                        </p>
                         <button
                             type='button'
-                            className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white'
+                            className='text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 inline-flex items-center dark:hover:bg-gray-800 dark:hover:text-white'
                             onClick={closeModal}>
                             <svg className='w-5 h-5' fill='currentColor' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'>
                                 <path
@@ -198,7 +210,6 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                                 name='shares'
                                                 id='shares'
                                                 min={0}
-                                                max={10000}
                                                 className='h-8 w-full mx-10 border-none outline-none bg-gray-100 dark:bg-darkCard text-gray-900 dark:text-gray-200 p-2 text-center sm:text-sm'
                                                 placeholder='0'
                                             />
@@ -238,7 +249,11 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                             }).format(total)}
                                         </span>
                                         {sharesOwned && isSelling && (
-                                            <span onClick={() => {setShares(sharesOwned)}} className='text-sm rounded-2xl px-5 p-2 cursor-pointer text-gray-900 bg-orange-200 hover:bg-orange-300 dark:bg-orange-600 hover:dark:bg-orange-700 dark:text-gray-200 ml-3'>
+                                            <span
+                                                onClick={() => {
+                                                    setShares(sharesOwned);
+                                                }}
+                                                className='text-sm rounded-2xl px-5 p-2 cursor-pointer text-gray-900 bg-orange-200 hover:bg-orange-300 dark:bg-orange-600 hover:dark:bg-orange-700 dark:text-gray-200 ml-3'>
                                                 Max
                                             </span>
                                         )}
@@ -250,7 +265,7 @@ export default function TransactionModal({ id, isHidden, toggle, ticker, exchang
                                         <Switch checked={isSelling} onChange={() => {}}>
                                             <span
                                                 className='rounded-2xl h-8 w-20 flex justify-center dark:bg-darkCard bg-gray-100 cursor-pointer'
-                                                onClick={(e) => {
+                                                onClick={() => {
                                                     setIsSelling((prev) => !prev);
                                                 }}>
                                                 <span

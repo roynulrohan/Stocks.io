@@ -1,27 +1,26 @@
-import { gql } from 'apollo-server-express';
-
-export const OwnedStockTypeDef = gql`
+export const OwnedStockTypeDef = `#graphql
     scalar JSON
 
-    type OwnedStock {
+    type OwnedStock implements Stock {
         _id: String!
         userId: String!
         ticker: String!
         shares: Int!
         initialInvestment: Float!
-    }
-
-    type ownedStocks {
-        ownedStocks: JSON
-    }
-
-    type ownedStock {
-        ownedStock: OwnedStock
+        name: String!
+        exchange: String!
+        price: Float!
+        logo: String!
+        ipo: String!
+        industry: String!
+        country: String!
+        currency: String!
+        weburl: String!
     }
 
     type Query {
-        getOwnedStocks: ownedStocks
-        getOwnedStock(ticker: String): ownedStock
+        ownedStocks: [OwnedStock]!
+        ownedStock(ticker: String): OwnedStock!
     }
 
     type stockTransactionResponse {
@@ -30,7 +29,7 @@ export const OwnedStockTypeDef = gql`
     }
 
     type Mutation {
-        buyStock(ticker: String!, shares: Int!): stockTransactionResponse
-        sellStock(ticker: String!, shares: Int!): stockTransactionResponse
+        buyStock(ticker: String!, shares: Int!): stockTransactionResponse!
+        sellStock(ticker: String!, shares: Int!): stockTransactionResponse!
     }
 `;

@@ -1,18 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
 import PriceChart from '../components/PriceChart';
 import PriceChange from '../components/PriceChange';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Stock, StockUpdate } from '../types';
 import { motion } from 'framer-motion';
-import { useSocket } from '../contexts/SocketProvider';
+import { useSocket } from '../contexts/useSocket';
 
 interface Props {
     stock: Stock;
 }
 
 const StockCard = React.memo(({ stock }: Props) => {
-    const socket: any = useSocket();
-    const history = useHistory();
+    const socket = useSocket();
+    const navigate = useNavigate();
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
     const prevPrice = useRef(stock?.price);
 
@@ -35,7 +35,7 @@ const StockCard = React.memo(({ stock }: Props) => {
     }, [currentPrice]);
 
     const cardOnClick = () => {
-        history.push('/stock/' + stock?.ticker);
+        navigate('/stock/' + stock?.ticker);
     };
 
     return (
@@ -68,11 +68,12 @@ const StockCard = React.memo(({ stock }: Props) => {
                     <span className='dark:text-gray-400'>{stock?.exchange}</span> : <span className='dark:text-gray-400 font-semibold'>{stock?.ticker}</span>
                 </p>
                 <PriceChange
+                    id={stock?.ticker + '-currentPrice'}
                     currentPrice={currentPrice !== -1 ? currentPrice : stock?.price}
                     prevPrice={prevPrice.current}
                     currency={stock?.currency}
                     ticker={stock?.ticker}
-                    styleset='text-xs lg:text-md'
+                    className='text-xs lg:text-md'
                 />
                 <PriceChart
                     key={stock?.ticker + ' price change'}

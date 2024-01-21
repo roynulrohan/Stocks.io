@@ -1,6 +1,4 @@
-import { gql } from 'apollo-server-express';
-
-export const TransactionTypeDef = gql`
+export const TransactionTypeDef = `#graphql
     scalar Date
 
     type Transaction {
@@ -12,12 +10,8 @@ export const TransactionTypeDef = gql`
         stockPrice: Float!
         date: Date!
     }
-
-    type transactions {
-        transactions: [Transaction]
-    }
-
+    
     type Query {
-        getTransactions: transactions
+        transactions: [Transaction!]!
     }
 `;

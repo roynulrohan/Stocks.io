@@ -1,7 +1,5 @@
-import { gql } from 'apollo-server-express';
-
-export const StockTypeDef = gql`
-    type Stock {
+export const StockTypeDef = `#graphql
+    interface Stock {
         ticker: String!
         name: String!
         exchange: String!
@@ -13,16 +11,22 @@ export const StockTypeDef = gql`
         currency: String!
         weburl: String!
     }
-    type stocks {
-        stocks: [Stock]
-    }
 
-    type stock {
-        stock: Stock
+    type StockData implements Stock {
+        ticker: String!
+        name: String!
+        exchange: String!
+        price: Float!
+        logo: String!
+        ipo: String!
+        industry: String!
+        country: String!
+        currency: String!
+        weburl: String!
     }
 
     type Query {
-        getStocks(search: String, limit: Int, random: Boolean): stocks
-        getStock(ticker: String): stock
+        searchStocks(search: String, limit: Int, random: Boolean): [StockData]!
+        stock(ticker: String): StockData!
     }
 `;

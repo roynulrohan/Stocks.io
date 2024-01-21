@@ -1,29 +1,33 @@
 import PriceChart from '../components/PriceChart';
 import PriceChange from '../components/PriceChange';
 import TransactionModal from '../components/TransactionModal';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Stock, OwnedStocksState, StockUpdate, AuthState } from '../types';
 import { GET_STOCK } from '../graphql';
-import { useSocket } from '../contexts/SocketProvider';
+import { useSocket } from '../contexts/useSocket';
 import { useQuery } from '@apollo/client';
+
 interface Props {
     ticker: string;
 }
 
 export default function StockPage({ ticker }: Props) {
     const auth = useSelector((state: AuthState) => state.authReducer.authData);
-    const socket: any = useSocket();
-    const history = useHistory();
+    const socket = useSocket();
+    const navigate = useNavigate();
     const location = useLocation();
-    const ownedStock = useSelector((state: OwnedStocksState) => state?.ownedStocksReducer?.ownedStocks?.[ticker]);
-    const { data } = useQuery(GET_STOCK, {
+    const ownedStock = useSelector((state: OwnedStocksState) => {
+        return state?.ownedStocksReducer?.ownedStocks?.find((stock) => stock.ticker === ticker);
+    });
+    const { data: stockDataRaw } = useQuery(GET_STOCK, {
         variables: { ticker },
     });
-    const [stockData, setStockData] = useState<Stock>();
+    const stockData = useMemo<Stock | undefined>(() => stockDataRaw?.stock, [stockDataRaw]);
+
     const [currentPrice, setCurrentPrice] = useState<number>(-1);
-    const prevPrice = useRef(-1);
+    const [prevPrice, setPrevPrice] = useState(-1);
     const [modalVisible, setModalVisible] = useState(false);
 
     useEffect(() => {
@@ -31,14 +35,13 @@ export default function StockPage({ ticker }: Props) {
     }, [ticker]);
 
     useEffect(() => {
-        setStockData(data?.getStock?.stock);
-    }, [data]);
-
-    useEffect(() => {
         if (socket === null) return;
 
         socket?.on(ticker, (priceData: StockUpdate) => {
-            setCurrentPrice(priceData.price);
+            setCurrentPrice((prev) => {
+                setPrevPrice(prev);
+                return priceData.price;
+            });
         });
 
         return () => {
@@ -46,30 +49,41 @@ export default function StockPage({ ticker }: Props) {
         };
     }, [socket, ticker]);
 
-    useEffect(() => {
-        if (currentPrice !== -1) {
-            prevPrice.current = currentPrice;
-        }
-    }, [currentPrice]);
-
     const toggleModal = useCallback(() => {
         if (auth) {
             setModalVisible((prev) => !prev);
         } else {
-            history.push({ pathname: '/auth', state: { redirect: location.pathname } });
+            navigate('/auth', { state: { redirect: location.pathname } });
         }
-    }, [auth, history, location.pathname]);
+    }, [auth, location.pathname, navigate]);
+
+    const currentPriceView = useMemo(() => {
+        if (!stockData) {
+            return null;
+        }
+
+        return (
+            <PriceChange
+                id={stockData.ticker + '-currentPrice'}
+                currentPrice={currentPrice !== -1 ? currentPrice : stockData.price}
+                prevPrice={(prevPrice !== -1 ? prevPrice : stockData.price) || 0}
+                currency={stockData.currency}
+                ticker={ticker}
+                className='text-center min-w-34 lg:text-sm text-xs px-4'
+            />
+        );
+    }, [currentPrice, stockData, ticker, prevPrice]);
 
     return (
         <div className='dark:bg-darkBg mt-16 min-h-screen w-full flex flex-col'>
-            {data?.getStock?.stock?.price && (
+            {stockData?.price && (
                 <TransactionModal
                     id={ticker + '-transactionModal'}
                     isHidden={!modalVisible}
                     toggle={toggleModal}
                     ticker={stockData?.ticker}
                     exchange={stockData?.exchange}
-                    currentPrice={currentPrice !== -1 ? currentPrice : data?.getStock?.stock?.price}
+                    currentPrice={currentPrice !== -1 ? currentPrice : stockData?.price}
                     sharesOwned={ownedStock?.shares}
                 />
             )}
@@ -163,11 +177,12 @@ export default function StockPage({ ticker }: Props) {
                                         <span>Current Value &nbsp;</span>
                                     </h1>
                                     <PriceChange
-                                        currentPrice={(currentPrice !== -1 ? currentPrice : data?.getStock?.stock?.price) * ownedStock?.shares}
+                                        id={stockData?.ticker + '-investmentValue'}
+                                        currentPrice={(currentPrice !== -1 ? currentPrice : stockData?.price || 0) * ownedStock?.shares}
                                         prevPrice={ownedStock?.initialInvestment}
-                                        currency={data?.getStock?.stock?.currency}
+                                        currency={stockData?.currency || 'USD'}
                                         ticker=''
-                                        styleset='text-center min-w-34 px-4'
+                                        className='text-center min-w-34 px-4'
                                     />
                                 </div>
                                 <div className='flex items-center text-gray-700 dark:text-gray-200'>
@@ -201,21 +216,13 @@ export default function StockPage({ ticker }: Props) {
                         </div>
                     )}
                 </div>
-                <div className='dark:bg-darkField bg-gray-100 p-10 lg:w-4/6 h-full rounded-lg ml-5'>
-                    <div className='flex justify-between'>
+                <div className='dark:bg-darkField bg-gray-100 p-5 min-w-[340px] lg:w-4/6 h-full rounded-lg ml-5'>
+                    <div className='flex justify-between w-full flex-wrap gap-x-5 gap-y-5'>
                         <h1 className='text-lg font-normal text-center text-gray-800 dark:text-white'>
                             {stockData?.name} <span className='dark:text-gray-400 text-gray-600 font-normal'> - {stockData?.exchange}</span>
                             <span className='dark:text-gray-400 text-gray-600 font-normal'> : {stockData?.ticker}</span>
                         </h1>
-                        {stockData?.price && (
-                            <PriceChange
-                                currentPrice={currentPrice !== -1 ? currentPrice : data?.getStock?.stock?.price}
-                                prevPrice={prevPrice.current !== -1 ? prevPrice.current : data?.getStock?.stock?.price}
-                                currency={stockData?.currency}
-                                ticker={ticker}
-                                styleset='text-center min-w-34 lg:text-sm text-xs px-4'
-                            />
-                        )}
+                        {currentPriceView}
                     </div>
                     <div className='mt-10'>
                         <div>

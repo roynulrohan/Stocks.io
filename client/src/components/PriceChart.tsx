@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from 'react';
-// @ts-ignore
 import { Chart, registerables } from 'chart.js';
 import { motion } from 'framer-motion';
 
@@ -114,7 +113,7 @@ const PriceChart = React.memo((props: any) => {
 
     return (
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.5, delay: 0.25 }} className={styleSet}>
-            <canvas id={id}></canvas>
+            <canvas id={id} className='!w-full !h-full'></canvas>
         </motion.div>
     );
 });

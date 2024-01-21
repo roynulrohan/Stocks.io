@@ -9,10 +9,10 @@ import { GraphQLJSON } from 'graphql-compose';
 const dateScalar = new GraphQLScalarType({
     name: 'Date',
     description: 'Date custom scalar type',
-    serialize(value) {
+    serialize(value: Date) {
         return value.getTime(); // Convert outgoing Date to integer for JSON
     },
-    parseValue(value) {
+    parseValue(value: string | number | Date) {
         return new Date(value); // Convert incoming integer to Date
     },
     parseLiteral(ast: any) {

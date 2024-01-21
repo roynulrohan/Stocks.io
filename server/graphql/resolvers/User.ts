@@ -1,9 +1,9 @@
 import { User } from '../../models/User';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { UserInputError, AuthenticationError, ApolloError } from 'apollo-server-express';
 import { validateRegisterInput, validateLoginInput } from '../../utils/AuthValidator';
 import { verifyToken } from '../../middleware/auth';
+import { GraphQLError } from 'graphql';
 
 const generateToken = (user) => {
     return jwt.sign(
@@ -22,13 +22,21 @@ export const UserResolver = {
             const { valid, errors } = validateRegisterInput(username, password, confirmPassword);
 
             if (!valid) {
-                throw new UserInputError(errors);
+                throw new GraphQLError(errors, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
             const user = await User.findOne({ username });
 
             if (user) {
-                throw new UserInputError('Username is already taken');
+                throw new GraphQLError('Username is already taken', {
+                    extensions: {
+                        code: 'TAKEN',
+                    },
+                });
             }
 
             password = await bcrypt.hash(password, 12);
@@ -38,7 +46,7 @@ export const UserResolver = {
                 password,
             });
 
-            const result: any = await newUser.save();
+            const result = await newUser.save();
 
             const token = generateToken(result);
 
@@ -48,19 +56,31 @@ export const UserResolver = {
             const { valid, errors } = validateLoginInput(username, password);
 
             if (!valid) {
-                throw new UserInputError(errors);
+                throw new GraphQLError(errors, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const user: any = await User.findOne({ username });
+            const user = await User.findOne({ username });
 
             if (!user) {
-                throw new UserInputError('Incorrect username or password');
+                throw new GraphQLError('Incorrect username or password', {
+                    extensions: {
+                        code: 'BAD_INPUT',
+                    },
+                });
             }
 
             const match = await bcrypt.compare(password, user.password);
 
             if (!match) {
-                throw new UserInputError('Incorrect username or password');
+                throw new GraphQLError('Incorrect username or password', {
+                    extensions: {
+                        code: 'BAD_INPUT',
+                    },
+                });
             }
 
             const token = generateToken(user);
@@ -68,61 +88,85 @@ export const UserResolver = {
             return { user, token };
         },
         deposit: async (_, { amount }, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const authResult = verifyToken({ token: token.split(' ')[1] });
+            const authResult = await verifyToken(token);
 
             if (authResult.error) {
-                throw new AuthenticationError(authResult.error);
+                throw new GraphQLError(authResult.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: amount } }, { new: true });
+            const result = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: amount } }, { new: true });
 
             return { newBalance: result.balance };
         },
         withdraw: async (_, { amount }, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const authResult = verifyToken({ token: token.split(' ')[1] });
+            const authResult = await verifyToken(token);
 
             if (authResult.error) {
-                throw new AuthenticationError(authResult.error);
+                throw new GraphQLError(authResult.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const user: any = await User.findOne({ _id: authResult.userId });
+            const user = await User.findOne({ _id: authResult.userId });
 
             if (user.balance < amount) {
-                throw new ApolloError('Not enough balance');
+                throw new GraphQLError('Insufficient funds', {
+                    extensions: {
+                        code: 'INSUFFICIENT_FUNDS',
+                    },
+                });
             }
 
-            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: -amount } }, { new: true });
+            const result = await User.findOneAndUpdate({ _id: authResult.userId }, { $inc: { balance: -amount } }, { new: true });
 
             return { newBalance: result.balance };
         },
         changeUsername: async (_, { newUsername, confirmPassword }, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const authResult = verifyToken({ token: token.split(' ')[1] });
+            const authResult = await verifyToken(token);
 
             if (authResult.error) {
-                throw new AuthenticationError(authResult.error);
+                throw new GraphQLError(authResult.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const nameExists: any = await User.findOne({ username: newUsername });
+            const nameExists = await User.findOne({ username: newUsername });
 
             if (nameExists) {
-                throw new ApolloError('Username already taken. Try another.');
+                throw new GraphQLError('Username is already taken', {
+                    extensions: {
+                        code: 'TAKEN',
+                    },
+                });
             }
 
-            const user: any = await User.findOne({ _id: authResult.userId });
+            const user = await User.findOne({ _id: authResult.userId });
 
             const passResult = await bcrypt.compare(confirmPassword, user.password);
 
             if (!passResult) {
-                throw new AuthenticationError('Invalid password, try again.');
+                throw new GraphQLError('Incorrect password', {
+                    extensions: {
+                        code: 'BAD_INPUT',
+                    },
+                });
             }
 
-            const result: any = await User.findOneAndUpdate({ _id: authResult.userId }, { username: newUsername }, { new: true });
+            const result = await User.findOneAndUpdate({ _id: authResult.userId }, { username: newUsername }, { new: true });
 
             return { newUsername: result.username };
         },
@@ -130,15 +174,19 @@ export const UserResolver = {
 
     Query: {
         getUser: async (_, args, context) => {
-            const token = context.req.headers.authorization;
+            const { token } = context;
 
-            const result = verifyToken({ token: token.split(' ')[1] });
+            const result = await verifyToken(token);
 
             if (result.error) {
-                throw new AuthenticationError(result.error);
+                throw new GraphQLError(result.error, {
+                    extensions: {
+                        code: 'UNAUTHORIZED',
+                    },
+                });
             }
 
-            const user: any = await User.findOne({ _id: result.userId });
+            const user = await User.findOne({ _id: result.userId });
 
             return { user, token: token.split(' ')[1] };
         },

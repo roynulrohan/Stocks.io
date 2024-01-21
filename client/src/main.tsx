@@ -6,19 +6,20 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { SocketProvider } from './contexts/SocketProvider';
 import { createStore } from 'redux';
-import reducers from './reducers';
+import reducers from './redux/reducers';
 import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
 // create redux store
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const store = createStore(reducers, (window as any).__REDUX_DEVTOOLS_EXTENSION__ && (window as any).__REDUX_DEVTOOLS_EXTENSION__());
 
 const httpLink = createHttpLink({
-    uri: `${process.env.REACT_APP_API_URI || ''}/graphql`,
+    uri: `${import.meta.env.VITE_API_URI || ''}/graphql`,
 });
 
 const authLink = setContext((_, { headers }) => {
-    const { token }: any = JSON.parse(localStorage.getItem('profile') || '{}');
+    const { token }: { token: string } = JSON.parse(localStorage.getItem('profile') || '{}');
 
     return {
         headers: {
