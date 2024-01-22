@@ -39,10 +39,6 @@ const init = async () => {
         })
     );
 
-    app.get('/health', (req, res) => {
-        res.status(200).send('Okay!');
-    });
-
     const uri = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.oisbb.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`;
 
     mongoose
@@ -59,7 +55,9 @@ const init = async () => {
 
     const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}/graphql`));
 
-    const io = new Server(http);
+    const io = new Server(http, {
+        path: '/socket.io',
+    });
 
     io.on('connection', async (socket) => {
         console.log('New socket connection: ', socket?.id);
