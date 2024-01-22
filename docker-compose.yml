@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "54321:54321"
-      - "443:443"
     environment:
       - MONGO_USER=${MONGO_USER}
       - MONGO_PASSWORD=${MONGO_PASSWORD}
