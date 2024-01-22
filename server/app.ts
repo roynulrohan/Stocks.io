@@ -31,7 +31,7 @@ const init = async () => {
     await server.start();
 
     app.use(
-        '/graphql',
+        'stocksioapi/graphql',
         cors<cors.CorsRequest>(),
         json(),
         expressMiddleware(server, {
