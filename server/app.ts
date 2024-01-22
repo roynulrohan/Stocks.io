@@ -56,7 +56,7 @@ const init = async () => {
     const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}/graphql`));
 
     const io = new Server(http, {
-        path: '/socket.io',
+        path: '/stocksioapi/socket.io',
     });
 
     io.on('connection', async (socket) => {
