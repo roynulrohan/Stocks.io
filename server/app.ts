@@ -31,8 +31,8 @@ const init = async () => {
     await server.start();
 
     app.use(
-        'stocksioapi/graphql',
-        cors<cors.CorsRequest>(),
+        '/graphql',
+        cors({ origin: true, credentials: true }),
         json(),
         expressMiddleware(server, {
             context: async ({ req }) => ({ token: req.headers.authorization }),
