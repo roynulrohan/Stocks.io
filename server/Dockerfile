@@ -10,5 +10,6 @@ COPY ./ ./
 ENV PORT 54321
 
 EXPOSE 54321
+EXPOSE 443
 
 CMD ["npm", "start"]
