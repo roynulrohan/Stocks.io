@@ -11,4 +11,8 @@ services:
       - MONGO_PASSWORD=${MONGO_PASSWORD}
       - MONGO_DB=${MONGO_DB}
       - JWT_SECRET=${JWT_SECRET}
+    networks:
+      - my_network  # Specify the custom network
 
+networks:
+  my_network:
