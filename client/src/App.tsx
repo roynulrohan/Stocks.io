@@ -55,7 +55,14 @@ function App() {
 
                     <Route path='/stock/:ticker' element={<StockPage ticker={useLocation().pathname.replace('/stock/', '')} />} />
 
-                    <Route path='/portfolio' element={<PortfolioPage />} />
+                    <Route
+                        path='/portfolio'
+                        element={
+                            <ProtectedRoute>
+                                <PortfolioPage />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route
                         path='/account'
                         element={

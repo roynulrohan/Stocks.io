@@ -19,7 +19,7 @@ interface Props {
 
 export default function TransactionModal({ id, isHidden, toggle, ticker, exchange, currentPrice, sharesOwned }: Props) {
     const dispatch = useDispatch();
-    const currentBalance = useSelector((state: AuthState) => state.authReducer.authData.user.balance);
+    const currentBalance = useSelector((state: AuthState) => state.authReducer?.authData?.user?.balance);
     const [buyStockMutation] = useMutation(BUY_STOCK);
     const [sellStockMutation] = useMutation(SELL_STOCK);
     const [isSelling, setIsSelling] = useState(false);
