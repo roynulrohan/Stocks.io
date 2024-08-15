@@ -1,14 +1,26 @@
 version: '3.9'
 services:
-  api:
-    build:
-      context: server
-      dockerfile: Dockerfile
-    ports:
-      - "54321:54321"
-    environment:
-      - MONGO_USER=${MONGO_USER}
-      - MONGO_PASSWORD=${MONGO_PASSWORD}
-      - MONGO_DB=${MONGO_DB}
-      - JWT_SECRET=${JWT_SECRET}
-
+    stocks-io-client:
+        restart: always
+        depends_on:
+            - stocks-io-api
+        build:
+            context: client
+            dockerfile: Dockerfile
+        ports:
+            - '3003:3000'
+        environment:
+            - VITE_API_URI=${VITE_API_URI}
+    stocks-io-api:
+        restart: always
+        build:
+            context: server
+            dockerfile: Dockerfile
+        ports:
+            - '3002:4000'
+        environment:
+            - MONGO_USER=${MONGO_USER}
+            - MONGO_PASSWORD=${MONGO_PASSWORD}
+            - MONGO_DB=${MONGO_DB}
+            - JWT_SECRET=${JWT_SECRET}
+            - FINNHUB_API_KEY=${FINNHUB_API_KEY}

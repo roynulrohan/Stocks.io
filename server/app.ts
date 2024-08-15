@@ -51,7 +51,7 @@ const init = async () => {
             updateStockPrices(1, 120000, undefined);
         });
 
-    const port = process.env.PORT || 443;
+    const port = 4000;
 
     const http = app.listen(port, () => console.log(`Server is running at http://localhost:${port}/graphql`));
 
