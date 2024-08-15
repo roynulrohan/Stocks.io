@@ -11,6 +11,7 @@ services:
             - '3003:3000'
         environment:
             - VITE_API_URI=${VITE_API_URI}
+        network_mode: bridge
     stocks-io-api:
         restart: always
         build:
@@ -24,3 +25,4 @@ services:
             - MONGO_DB=${MONGO_DB}
             - JWT_SECRET=${JWT_SECRET}
             - FINNHUB_API_KEY=${FINNHUB_API_KEY}
+        network_mode: bridge
