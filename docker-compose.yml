@@ -1,6 +1,7 @@
 version: '3.9'
 services:
     stocks-io-client:
+        container_name: stocks-io-client
         restart: always
         depends_on:
             - stocks-io-api
@@ -13,6 +14,7 @@ services:
             - VITE_API_URI=${VITE_API_URI}
         network_mode: bridge
     stocks-io-api:
+        container_name: stocks-io-api
         restart: always
         build:
             context: server
